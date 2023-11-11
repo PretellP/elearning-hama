@@ -46,7 +46,7 @@
                                     </div>
                                     <div class="card-block">
                                         
-                                        <form action="{{route('folder.create', $course)}}" method="POST">
+                                        <form action="{{route('admin.folder.create', $course)}}" method="POST">
                                             @csrf
                                             
                                             <div class="form-group row">

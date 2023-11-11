@@ -42,6 +42,7 @@
                         <thead>
                             <tr>
                                 <th>N°</th>
+                                <th>Tipo</th>
                                 <th>Nombre</th>
                                 <th>Subtítulo</th>
                                 <th>Fecha</th>
@@ -53,8 +54,9 @@
 
                         <tbody>
                             <td> {{$course->id}} </td>
+                            <td> {{$course->type == null ? '-' : $course->type->name}} </td>
                             <td> {{$course->description}} </td>
-                            <td> {{$course->subtitle}} </td>
+                            <td> {{$course->subtitle ?? '-'}} </td>
                             <td> {{$course->date}} </td>
                             <td> {{getTimeforHummans($course->time_start)}} </td>
                             <td> {{getTimeforHummans($course->time_end)}} </td>
@@ -90,7 +92,7 @@
                                         <h6>Crear Carpeta </h6>
                                     </div>
                                     <div class="card-block">
-                                        <form action="{{route('folder.create', $course)}}" method="POST">
+                                        <form action="{{route('admin.folder.create', $course)}}" method="POST">
                                             @csrf
                                             <div class="form-group row">
                                                 <div class="col-sm-12">

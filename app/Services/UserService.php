@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\{User};
+use Auth;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -13,15 +14,18 @@ class UserService
 {
     public function getDataTable()
     {
-        $allUsers = DataTables::of(User::with('company:id,description')
-            ->withCount(
-                [
-                    'events',
-                    'certifications',
-                    'publishings',
-                    'userSurveys'
-                ]
-            ))
+        $query = User::with('company:id,description')
+                ->withCount(
+                    [
+                        'events',
+                        'certifications',
+                        'publishings',
+                        'userSurveys'
+                    ]
+                )
+                ->select('users.*');
+
+        $allUsers = DataTables::of($query)
             ->addColumn('name', function ($user) {
                 return $user->full_name;
             })
@@ -29,7 +33,7 @@ class UserService
                 return config('parameters.roles')[$user->role] ?? '-';
             })
             ->editColumn('company.description', function ($user) {
-                $company = $user->company == null ? '' : $user->company->description;
+                $company = $user->company == null ? '-' : $user->company->description;
 
                 return $company;
             })
@@ -50,7 +54,8 @@ class UserService
                     $user->events_count == 0 &&
                     $user->certifications_count == 0 &&
                     $user->publishings_count == 0 &&
-                    $user->user_surveys_count == 0
+                    $user->user_surveys_count == 0 && 
+                    $user->id != Auth::user()->id
                 ) {
                     $btn .= '<a href="javascript:void(0)" data-id="' .
                         $user->id . '" data-original-title="delete"
@@ -111,6 +116,8 @@ class UserService
         $data = normalizeInputStatus($request->all());
 
         $data['password'] = $data['password'] == NULL ? $user->password : Hash::make($data['password']);
+        $data['role'] = $user->role == Auth::user()->role ? Auth::user()->role : $data['role'];
+        $data['active'] = $user->id == Auth::user()->id ? 'S' : $data['active'];
 
         if ($user->update($data)) {
             

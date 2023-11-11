@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\{Exam, Certification, User, Room};
+use Carbon\Carbon;
 
 class Event extends Model
 {
@@ -146,5 +147,17 @@ class Event extends Model
             'eLearning',
         ])
         ->loadCount(['certifications', 'userSurveys']);
+    }
+
+
+
+    // ACCESSORS AND MUTATORS
+
+    public function getDateEsAttribute()
+    {
+        $date_carbon = Carbon::parse($this->date);
+        $month_es = config('parameters.months_es')[$date_carbon->isoFormat('MM')]; 
+
+        return $date_carbon->isoFormat('DD') . ' de ' . $month_es . ' del ' . $date_carbon->isoFormat('YYYY');
     }
 }

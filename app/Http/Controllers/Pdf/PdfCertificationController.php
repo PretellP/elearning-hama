@@ -3,12 +3,19 @@
 namespace App\Http\Controllers\Pdf;
 
 use App\Http\Controllers\Controller;
-use App\Models\Certification;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Http\Request;
+use App\Models\{Certification, File, MiningUnit};
+use App\Services\Pdf\{PdfCertificationService};
+
 
 class PdfCertificationController extends Controller
 {
+    private $pdfCertificationService;
+
+    public function __construct(PdfCertificationService $service)
+    {
+        $this->pdfCertificationService = $service;
+    }   
+
     public function examPdf(Certification $certification)
     {
         $certification->load(
@@ -22,10 +29,41 @@ class PdfCertificationController extends Controller
             ]
         );
 
-        $pdf = Pdf::loadView('admin.common.pdf.certification_exam', compact(
-            'certification'
-        ));
+        return $this->pdfCertificationService->exportExamPdf($certification);
 
-        return $pdf->stream('certificado-'. $certification->id .'.pdf');
+    }
+
+    public function certificationPdf(Certification $certification)
+    {
+        $certification->load([
+            'course',
+            'user',
+            'event.ownerCompany',
+            'event.user.file' => fn ($q) => $q->where('category', 'firmas'),
+            'miningUnits'
+        ]);
+
+        return $this->pdfCertificationService->exportCertificationPdf($certification);
+    }
+
+    public function commitmentPdf(Certification $certification, MiningUnit $miningUnit)
+    {
+        $sufix = getMiningUnitSufix($miningUnit->description);
+        
+        $certification->load([
+            'user.file' => fn($q) => $q->where('category', 'firmas'),
+            'event'
+        ]);
+
+        return $this->pdfCertificationService->exportCommitmentPdf($certification, $miningUnit, $sufix);
+    }
+
+    public function downloadFile(File $file)
+    {
+        $storage = env('FILESYSTEM_DRIVER');
+
+        if (!$this->pdfCertificationService->downloadFile($file, $storage)) {
+            return redirect()->route('certifications.index');
+        }
     }
 }

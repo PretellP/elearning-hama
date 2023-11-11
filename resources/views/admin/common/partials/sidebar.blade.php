@@ -57,6 +57,13 @@
                 </a>
             </li>
 
+            <li class="{{setActive('admin.coursetypes.*')}}">
+                <a href="{{route('admin.coursetypes.index')}}" class="nav-link">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span>Tipos de cursos</span>
+                </a>
+            </li>
+
             <li class="{{setActive('admin.courses.*')}}">
                 <a class="nav-link" href="{{route('admin.courses.index')}}">
                     <i class="fa-solid fa-book"></i>

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CourseRequest;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use App\Models\{Course};
+use App\Models\{Course, CourseType};
 use App\Services\{CourseService};
 use Exception;
 
@@ -24,7 +24,10 @@ class AdminCourseController extends Controller
         if ($request->ajax()) {
             return $this->courseService->getDataTable();
         }
-        return view('admin.courses.index');
+
+        $coursetypes = CourseType::get(['id', 'name']);
+
+        return view('admin.courses.index', compact('coursetypes'));
     }
 
     public function store(CourseRequest $request)
@@ -33,12 +36,16 @@ class AdminCourseController extends Controller
 
         try{
             $this->courseService->store($request, $storage);
+            $success = true;
         }catch(Exception $e){
-            abort(500, $e->getMessage());
+            $success = false;
         }
 
+        $message = getMessageFromSuccess($success, 'stored');
+
         return response()->json([
-            'success' => true
+            'success' => $success,
+            'message' => $message,
         ]);
     }
 
@@ -57,7 +64,8 @@ class AdminCourseController extends Controller
             "time_start" => (Carbon::parse($course->time_start))->format('g:i A'),
             "time_end" => (Carbon::parse($course->time_end))->format('g:i A'),
             "url_img" => $url_img,
-            "status" => $course->active
+            "status" => $course->active,
+            "course_type_id" => $course->course_type_id,
         ]);
     }
 
@@ -68,12 +76,16 @@ class AdminCourseController extends Controller
 
         try{
             $this->courseService->update($request, $storage, $course);
+            $success = true;
         }catch (Exception $e) {
-            abort(500, $e->getMessage());
+            $success = false;
         }
 
+        $message = getMessageFromSuccess($success, 'updated');
+
         return response()->json([
-            "success" => true
+            "success" => $success,
+            "message" => $message
         ]);
     }
 
@@ -83,13 +95,16 @@ class AdminCourseController extends Controller
         $storage = env('FILESYSTEM_DRIVER');
 
         try{
-            $this->courseService->destroy($storage, $course);
+            $success = $this->courseService->destroy($storage, $course);
         }catch(Exception $e){
-            abort(500, $e->getMessage());
+            $success = false;
         }
 
+        $message = getMessageFromSuccess($success, 'deleted');
+
         return response()->json([
-            "success" => true
+            "success" => $success,
+            "message" => $message
         ]);
     }
 
@@ -102,7 +117,9 @@ class AdminCourseController extends Controller
                     ->where('category', 'cursos'),
 
                 'folders' => fn ($query2) =>
-                $query2->where('level', 1)
+                $query2->where('level', 1),
+
+                'type'
             ],
         );
 

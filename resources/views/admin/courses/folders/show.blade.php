@@ -36,7 +36,7 @@
                             <h6>Editar nombre</h6>
                         </div>
                         <div>
-                            <form action="{{route('folder.update', $folder)}}" method="POST">
+                            <form action="{{route('admin.folder.update', $folder)}}" method="POST">
                                 @method('PATCH')
                                 @csrf
                                 <div class="form-group row">
@@ -73,7 +73,7 @@
                             </div>
                             <div>
                                 
-                                <form action="{{route('subfolder.create', $folder)}}" method="POST">
+                                <form action="{{route('admin.subfolder.create', $folder)}}" method="POST">
                                     @csrf
                                     
                                     <div class="form-group row">
@@ -187,7 +187,7 @@
             </div>
 
             <div class="folder-inner-container">
-                <form id="delete-folder-form" method="POST" action="{{route('folder.destroy', $folder)}}">
+                <form id="delete-folder-form" method="POST" action="{{route('admin.folder.destroy', $folder)}}">
                     @csrf @method('DELETE')
                     <button id="btn-destroy-folder" class="btn btn-danger" type="submit">
                         <i class="fa-solid fa-triangle-exclamation"></i> &nbsp; Eliminar Carpeta

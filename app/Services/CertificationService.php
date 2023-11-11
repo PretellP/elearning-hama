@@ -6,7 +6,7 @@ use App\Models\{Certification, Event, User};
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
+use Illuminate\Support\{Arr, Str};
 use Yajra\DataTables\Facades\DataTables;
 
 class CertificationService
@@ -283,10 +283,13 @@ class CertificationService
 
     // ----------------- CERTIFICATION MODULE ------------------------
 
-
     public function getCertificationDataTable(Request $request)
     {
-        $query = Certification::with(['user', 'company', 'event.exam.course'])
+        $query = Certification::with([
+                                    'user', 
+                                    'company',
+                                    'event.exam.course.type'
+                                ])
                                 ->where('status', 'finished')
                                 ->where('evaluation_type', 'certification')
                                 ->select('certifications.*');
@@ -335,7 +338,7 @@ class CertificationService
                 return $certification->score ?? '-';
             })
             ->addColumn('exam', function ($certification) {
-                $exam_icon = '<a href="'. route('pdf.certification.exam', $certification) .'" target="_BLANK">
+                $exam_icon = '<a href="'. route('admin.pdf.certification.exam', $certification) .'" target="_BLANK">
                                     <img src="'. asset('assets/common/img/exam-icon.svg') .'" 
                                     alt="examen-'. $certification->id .'"
                                     style="width:30px;">
@@ -347,8 +350,23 @@ class CertificationService
 
                 if ($certification->score >= $certification->event->min_score ) {
 
-                    $certification_icon = '<a href="">
-                                                <img src="'. asset('assets/common/img/certification-icon.svg') .'"
+                    $type = $certification->event->exam->course->type;
+
+                    if ($type) {
+
+                        if (Str::is('*EXTERNO*', strtoupper($type->name))) {
+                            $certification_icon = '<a href="'. route('pdf.export.ext_certification', $certification) .'" target="_BLANK">';
+                        } else if (Str::is('*WEBINAR*', strtoupper($type->name))) {
+                            $certification_icon = '<a href="'. route('pdf.export.web_certification', $certification) .'" target="_BLANK">';
+                        } else {
+                            $certification_icon = '<a href="'. route('pdf.export.certification', $certification) .'" target="_BLANK">';
+                        }
+
+                    } else {
+                        $certification_icon = '<a href="'. route('pdf.export.certification', $certification) .'" target="_BLANK">';
+                    }
+
+                    $certification_icon .= '<img src="'. asset('assets/common/img/certification-icon.svg') .'"
                                                 alt="certificado-'. $certification->id .'" 
                                                 style="width:30px;">
                                           </a>';
@@ -364,4 +382,41 @@ class CertificationService
         return $allCertifications;
     }
 
+
+
+
+
+    // ------------------- CERTIFICATIONS HOME -------------------
+
+    public function getByFilters($request)
+    {
+        $query = Certification::with(
+                                    [
+                                        'course.type', 
+                                        'company:id,description',
+                                        'event:id,date',
+                                        'miningUnits',
+                                        'files' => fn($q) => $q->where('category', 'anexos')
+                                    ]
+                            )
+                            ->whereHas('course', function ($q2) {
+                                $q2->has('type');
+                            })
+                            ->whereHas('event', function ($q3) {
+                                $q3->whereRaw('certifications.score >= events.min_score');
+                            })
+                            ->whereHas('company', function ($q4) {
+                                $q4->where('active', 'S');
+                            })
+                            ->where('evaluation_type', 'certification')
+                            ->select('certifications.*');
+
+        if ($request->filled('dni')) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('dni', $request['dni']);
+            });
+        }
+                 
+        return $query->get()->groupBy('course.course_type_id');
+    }
 }

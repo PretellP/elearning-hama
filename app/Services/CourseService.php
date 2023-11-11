@@ -12,13 +12,21 @@ class CourseService
 {
     public function getDataTable()
     {
-        $allCourses = DataTables::of(
-            Course::query()
-                ->withCount([
-                    'folders',
-                    'exams',
-                ])->where('course_type', 'REGULAR')
-        )
+        $query = Course::withCount([
+                        'folders',
+                        'exams',
+                    ])
+                    ->with('type')
+                    ->where('course_type', 'REGULAR')
+                    ->select('courses.*');
+
+        $allCourses = DataTables::of($query)
+            ->editColumn('course_type_id', function ($course) {
+                return $course->type == null ? '-' : $course->type->name;
+            })
+            ->editColumn('subtitle', function ($course) {
+                return $course->subtitle ?? '-';
+            })
             ->editColumn('description', function ($course) {
                 return '<a href="' . route('admin.courses.show', $course) .
                     '" class="content-course-btn">' . $course->description . '</a>';
@@ -202,7 +210,7 @@ class CourseService
             return $courseUpdated;
         }
 
-        throw new Exception('Ocurrio un error al realizar el registro');
+        throw new Exception(config('parameters.exception_message'));
     }
 
     public function destroy($storage, Course $course)

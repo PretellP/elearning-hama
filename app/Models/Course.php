@@ -32,12 +32,18 @@ class Course extends Model
         'course_type',
         'flg_public',
         'flg_recom',
-        'category_id'
+        'category_id',
+        'course_type_id'
     ];
 
     public function folders()
     {
         return $this->hasMany(Folder::class, 'id_course', 'id');
+    }
+
+    public function type()
+    {
+        return $this->belongsTo(CourseType::class, 'course_type_id', 'id');
     }
 
     public function exams()

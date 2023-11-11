@@ -10,6 +10,7 @@ use App\Imports\UsersImport;
 use Illuminate\Http\Request;
 use App\Models\{User, Company, MiningUnit};
 use App\Services\UserService;
+use Auth;
 use Exception;
 
 class AdminUsersController extends Controller
@@ -87,6 +88,7 @@ class AdminUsersController extends Controller
         $user->loadAvatar();
 
         $role = config('parameters.roles')[$user->role] ?? '-';
+        $isAuth = $user->id == Auth::user()->id;
 
         return response([
             "user" => $user,
@@ -95,6 +97,7 @@ class AdminUsersController extends Controller
             "miningUnits" => MiningUnit::get(['id', 'description']),
             "miningUnitsSelect" => $user->miningUnits->pluck('id')->toArray(),
             "url_img" => verifyUserAvatar($user->file),
+            "isAuth" => $isAuth,
         ]);
     }
 

@@ -175,6 +175,15 @@ $evaluations = $certification->evaluations;
             </div>
         </div>
 
+        <div class="f-clear">
+            <div class="w-half f-left">
+                <div>
+                    <b>Puntuación final: </b>
+                    {{$certification->score}}
+                </div>
+            </div>
+        </div>      
+
         @if ($certification->recovered_at != '')
 
         <div class="f-clear">
@@ -380,14 +389,7 @@ $evaluations = $certification->evaluations;
         </div>
 
         <div>
-            <div class="w-half f-left">
-                <div>
-                    <b>Puntuación final: </b>
-                    {{$certification->score}}
-                </div>
-            </div>
-
-            <div class="w-half f-left text-right">
+            <div class="w-100 text-right">
                 <b>Estado: </b>
                 @if ($certification->score >= $event->min_score)
                 Aprobado

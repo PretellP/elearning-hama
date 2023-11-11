@@ -32,6 +32,7 @@ class CourseRequest extends FormRequest
             'time_end'      => ['required'],
             'image'         => ['nullable'],
             'active'        => ['nullable'],
+            'course_type_id'=> ['nullable'],
         ];
     }
 }

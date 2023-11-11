@@ -8,6 +8,8 @@ use App\Models\{Event, Evaluation, User};
 
 class Certification extends Model
 {
+    use \Znck\Eloquent\Traits\BelongsToThrough;
+
     use HasFactory;
 
     protected $table = 'certifications';
@@ -31,6 +33,11 @@ class Certification extends Model
         'observation'
     ];
 
+    public function files()
+    {
+        return $this->morphMany(File::class, 'fileable');
+    }
+
     public function event()
     {
         return $this->belongsTo(Event::class, 'event_id', 'id');
@@ -39,6 +46,11 @@ class Certification extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function course()
+    {
+        return $this->belongsToThrough(Course::class, [Exam::class, Event::class]);
     }
 
     public function evaluations()

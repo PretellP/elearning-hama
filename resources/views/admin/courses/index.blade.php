@@ -26,6 +26,7 @@
                 <thead>
                     <tr>
                         <th>N°</th>
+                        <th>Tipo</th>
                         <th>Nombre</th>
                         <th>Subtítulo</th>
                         <th>Fecha</th>
@@ -119,6 +120,20 @@
                                     </div>
                                   </div>
                                 <input name="time_end" type="text" class="form-control timepicker">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-12">
+                            <label>Tipo de curso (opcional)</label>
+                            <div class="input-group">
+                                <select name="course_type_id" class="form-control select2 coursetype_select">
+                                    <option></option>
+                                    @foreach ($coursetypes as $type)
+                                    <option value="{{$type->id}}">{{$type->name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -236,6 +251,20 @@
                                     </div>
                                   </div>
                                 <input name="time_end" type="text" class="form-control timepicker">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-12">
+                            <label>Tipo de curso (opcional)</label>
+                            <div class="input-group">
+                                <select name="course_type_id" class="form-control select2 coursetype_select">
+                                    <option></option>
+                                    @foreach ($coursetypes as $type)
+                                    <option value="{{$type->id}}">{{$type->name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>

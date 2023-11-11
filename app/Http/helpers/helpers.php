@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use App\Models\{
     DynamicAlternative,
@@ -18,14 +17,24 @@ use App\Models\{
     User
 };
 
+Carbon::setLocale('es');
+
 date_default_timezone_set("America/Lima");
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File as FacadesFile;
+use Illuminate\Support\Str;
 
 function setActive($routeName)
 {
     return request()->routeIs($routeName) ? 'active' : '';
+}
+
+function getMessageFromSuccess($success, $context)
+{
+    $message = $success ? config('parameters.'. $context .'_message') : config('parameters.exception_message');
+
+    return $message;
 }
 
 function getSelectedAnswers($certification)
@@ -517,7 +526,7 @@ function verifyFile($file)
 
 
 
-// ----------- DATE TIME ------------
+// ----------- DATE TIME CARBON ------------
 
 function getCurrentDate()
 {
@@ -542,6 +551,11 @@ function getCurrentYear()
 function getCurrentMonth()
 {
     return Carbon::now('America/Lima')->isoFormat('MMMM');
+}
+
+function getCarbonInstance($date)
+{
+    return Carbon::parse($date);
 }
 
 // ----------------------------------
@@ -591,6 +605,22 @@ function verifyEventType($type)
     }
 
     return $type;
+}
+
+
+
+// -------------- CERTIFICATIONS ----------------
+
+function getMiningUnitSufix($description)
+{
+    $sufix = '-';
+
+    if (Str::is('*ATACOCHA*', strtoupper($description))) $sufix = 'A'; 
+    if (Str::is('*PORVENIR*', strtoupper($description))) $sufix = 'P'; 
+    if (Str::is('*SINAYCOCHA*', strtoupper($description))) $sufix = 'S'; 
+    if (Str::is('*CERRO*', strtoupper($description))) $sufix = 'C'; 
+
+    return $sufix;
 }
 
 
