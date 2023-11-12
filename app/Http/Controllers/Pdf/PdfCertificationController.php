@@ -58,6 +58,17 @@ class PdfCertificationController extends Controller
         return $this->pdfCertificationService->exportCommitmentPdf($certification, $miningUnit, $sufix);
     }
 
+    public function webCertificationPdf(Certification $certification)
+    {
+        $certification->load([
+            'event.user.file' => fn ($q) => $q->where('category', 'firmas'),
+            'course',
+            'user'
+        ]);
+
+        return $this->pdfCertificationService->exportWebCertificationPdf($certification);
+    }
+
     public function downloadFile(File $file)
     {
         $storage = env('FILESYSTEM_DRIVER');

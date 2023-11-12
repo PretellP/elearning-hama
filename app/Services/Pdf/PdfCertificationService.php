@@ -4,10 +4,8 @@ namespace App\Services\Pdf;
 
 use App\Models\{Certification, File};
 use App\Services\{FileService};
-use Exception;
-use Auth;
-use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Intervention\Image\Facades\Image;
 
 class PdfCertificationService
 {
@@ -17,7 +15,7 @@ class PdfCertificationService
             'certification'
         ));
 
-        return $pdf->stream('certificado-'. $certification->id .'.pdf');
+        return $pdf->stream('certificado-' . $certification->id . '.pdf');
     }
 
     public function exportCertificationPdf(Certification $certification)
@@ -27,8 +25,8 @@ class PdfCertificationService
             $pdf = Pdf::loadView('pdf.certification', compact(
                 'certification'
             ))->setPaper('letter', 'portrait');
-    
-            return $pdf->stream('certificado_'. $certification->user->id . '_' . $certification->event->id .'.pdf');
+
+            return $pdf->stream('certificado_' . $certification->user->id . '_' . $certification->event->id . '.pdf');
         }
 
         abort(403, 'Acceso no autorizado');
@@ -44,7 +42,37 @@ class PdfCertificationService
                 'miningUnit'
             ))->setPaper('letter', 'portrait');
 
-            return $pdf->stream('compromisos_'. $certification->user->id . '_' . $certification->event->id . '_' . $sufix . '.pdf');
+            return $pdf->stream('compromisos_' . $certification->user->id . '_' . $certification->event->id . '_' . $sufix . '.pdf');
+        }
+
+        abort(403, 'Acceso no autorizado');
+    }
+
+    public function exportWebCertificationPdf(Certification $certification)
+    {
+        if ($this->isEnableExport($certification)) {
+
+            $original_image = $certification->event->user->file->file_url;
+            
+            $mask = Image::make($original_image)
+                ->greyscale()
+                ->contrast(100)
+                ->trim('top-left', null, 40)
+                ->invert();
+
+            $new_image = Image::canvas($mask->width(), $mask->height(), '#000000')
+                ->mask($mask)
+                ->encode('png', 100);
+
+            $pdf = PDF::loadView('pdf.webinar_certification', compact(
+                'certification',
+                'new_image'
+            ))->setPaper('a4', 'landscape');
+
+            $pdf_name = 'certificado_' . $certification->user->dni . '_' . $certification->event->id . '.pdf';
+
+            return $pdf->stream($pdf_name);
+            // return $pdf->download($pdf_name);
         }
 
         abort(403, 'Acceso no autorizado');

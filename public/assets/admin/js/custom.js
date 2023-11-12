@@ -973,7 +973,6 @@ $(function () {
             if ($(this).val()) {
                 // $('#registerUserForm').validate()
                 // $('#image-upload-category-edit').rules('add', { required: true })
-
                 var img_path = $(this)[0].value;
                 var img_holder = $(this).closest('#registerUserForm').find('.img-holder');
                 var currentImagePath = $(this).data('value');

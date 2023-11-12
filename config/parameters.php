@@ -44,7 +44,8 @@ return [
 
     'miningUnit_company_name' => [
         'A' => 'Atacocha SAA',
-        'P' => 'El Porvenir SAC'
+        'P' => 'El Porvenir SAC',
+        '-' => 'Atacocha SAA'
     ],
 
     'months_es' => [

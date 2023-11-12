@@ -499,9 +499,6 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
         });
     });
 
-
-
-
     // -------  RUTAS DE LA INTERFAZ AULA ---------------
 
     Route::group(['middleware' => 'aula', 'prefix' => 'aula'], function () {
