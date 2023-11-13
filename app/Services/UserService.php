@@ -210,4 +210,29 @@ class UserService
             'new_password' => ['required', 'string'],
         ]);
     }
+
+
+
+
+
+    // -------------- SIGNATURE ---------------
+
+    public function storeSignature(User $user, $imgBase64, $storage)
+    {
+        $file_type = 'imagenes';
+        $category = 'firmas';
+        $belongsTo = 'firmas';
+        
+        if (app(FileService::class)->storeSignature($user, 
+                                                    $imgBase64, 
+                                                    $file_type, 
+                                                    $category, 
+                                                    $belongsTo,
+                                                    $storage)) 
+        {
+            return true;
+        }
+
+        throw new Exception(config('parameters.exception_message'));
+    }
 }

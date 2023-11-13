@@ -17,18 +17,24 @@ class Aula
      */
     public function handle(Request $request, Closure $next)
     {
-        if(!Auth::check())
-        {
+        if(!Auth::check()) {
             return redirect()->route('login');
         }
     
         $role = Auth::user()->role;
 
-        if($role == 'instructor' || $role == 'participants')
+        if(in_array($role, [
+                            'instructor', 
+                            'participants',
+                            'supervisor',
+                            'security_manager',
+                            'security_manager_admin',
+                            'technical_support'
+                            ]))
         {
             return $next($request);
-        }else{
-            abort(403, 'Acceso denegado');
         }
+
+        abort(403, 'Acceso denegado');
     }
 }

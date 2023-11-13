@@ -8,7 +8,7 @@
         <div class="card page-title-container">
             <div class="card-header">
                 <div class="total-width-container">
-                    <h4>TIPOS DE CURSOS</h4>
+                    <h4>TIPOS DE CURSO</h4>
                 </div>
             </div>
         </div>

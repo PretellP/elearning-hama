@@ -14,6 +14,7 @@ use App\Models\{
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use App\Services\Classroom\ClassroomQuizService;
+use Auth;
 
 date_default_timezone_set("America/Lima");
 
@@ -101,7 +102,8 @@ class QuizController extends Controller
 
             if ($event->questions_qty <= $exam->questions_count &&
                 getCurrentDate() == $event_date &&
-                $certification->assist_user == 'S'
+                $certification->assist_user == 'S' &&
+                Auth::user()->signature == 'S'
             ) {
 
                 $userSurvey = $this->quizService->getEnabledUserSurvey($certification);

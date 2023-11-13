@@ -23,7 +23,7 @@ class FreeCourseService
         )
         ->where('course_type', 'FREE')
         ->withCount(['courseSections', 'courseChapters'])
-            ->withSum('courseChapters', 'duration');
+        ->withSum('courseChapters', 'duration');
     }
 
     public function attachFreeCourseRelationships($query)

@@ -40,17 +40,6 @@
                     <div class="profile-info"> {{$user->telephone}} </div>
                 </div>
 
-                {{-- <div id="form-container-update-password">
-
-                    <form action="{{ route('aula.profile.updatePassword', ["user"=> Auth::user()]) }}" method="POST"
-                        id="user_password_update_form">
-
-                        @include('aula.common.profile.partials.boxes._form_update_password')
-
-                    </form>
-
-                </div> --}}
-
             </div>
 
 

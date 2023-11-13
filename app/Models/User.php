@@ -101,6 +101,11 @@ class User extends Authenticatable
         return $this->morphOne(File::class, 'fileable');
     }
 
+    public function files()
+    {
+        return $this->morphMany(File::class, 'fileable');
+    }
+
     static function getInstructorsQuery()
     {
         return User::whereIn('role', ['instructor']);
@@ -108,7 +113,12 @@ class User extends Authenticatable
 
     static function getResponsablesQuery()
     {
-        return User::where('company_id', 10);
+        return User::where('company_id', 10)
+                    ->orWhere( function ($q) {
+                        $q->whereHas('company', function ($q2) {
+                            $q2->whereRaw("(LOWER(companies.description) LIKE '%hama%')");
+                        });
+                    });
     }
 
     public function avatar()

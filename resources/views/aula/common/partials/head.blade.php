@@ -33,11 +33,10 @@
 
 	<link rel="stylesheet" href="{{asset('assets/common/css/jquery-ui.min.css')}}">
 
-	@yield('extra-head')
-
 	<link rel="stylesheet" href="{{asset('assets/aula/css/custom.css')}}">
 	<link rel="stylesheet" href="{{asset('assets/common/css/fonts.css')}}">
 
+	@yield('extra-head')
 
 	<!-- VIDEO.JS ---->
 	<link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />

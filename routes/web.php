@@ -29,7 +29,8 @@ use App\Http\Controllers\Aula\Common\{
     AulaHomeController,
     AulaCourseController,
     AulaFolderController,
-    AulaProfileController
+    AulaProfileController,
+    AulaSignaturesController
 };
 use App\Http\Controllers\Aula\Participant\{
     AulaCoursePartController,
@@ -105,7 +106,7 @@ Auth::routes(['register' => false]);
 // --------------- CERTIFICATION -----------------
 
 Route::group(['prefix' => 'certificados', 'as' => 'certifications.'], function () {
-    
+
     Route::controller(CertificateController::class)->group(function () {
 
         Route::get('/', 'index')->name('index');
@@ -118,9 +119,7 @@ Route::group(['prefix' => 'pdf', 'as' => 'pdf.'], function () {
     Route::controller(PdfCertificationController::class)->group(function () {
 
         Route::get('/exportar-certificado/{certification}', 'certificationPdf')->name('export.certification');
-
         Route::get('/exportar-compromiso/{certification}/unidad-minera/{miningUnit}', 'commitmentPdf')->name('export.commitment');
-
         Route::get('/exportar-certificado-externo/{certification}', 'extCertificationPdf')->name('export.ext_certification');
         Route::get('/exportar-certificado-webinar/{certification}', 'webCertificationPdf')->name('export.web_certification');
         Route::get('/descargar-archivo/{file}', 'downloadFile')->name('download.file');
@@ -221,7 +220,7 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
         // -------------- COURSE TYPES -----------------
         //--- admin.coursetypes.*
 
-        Route::group(['prefix' => 'tipos-de-cursos', 'as' => 'coursetypes.'], function (){
+        Route::group(['prefix' => 'tipos-de-cursos', 'as' => 'coursetypes.'], function () {
 
             Route::controller(CourseTypeController::class)->group(function () {
 
@@ -235,16 +234,16 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
 
         // --------------- COURSES ----------------------
 
-        Route::group(['prefix' => 'cursos'], function () {
+        Route::group(['prefix' => 'cursos', 'as' => 'courses.'], function () {
 
             Route::controller(AdminCourseController::class)->group(function () {
 
-                Route::get('/', 'index')->name('courses.index');
-                Route::get('/editar/{course}', 'edit')->name('courses.edit');
-                Route::get('/ver/{course}', 'show')->name('courses.show');
-                Route::post('/registrar', 'store')->name('courses.store');
-                Route::post('/actualizar/{course}', 'update')->name('courses.update');
-                Route::delete('/eliminar/{course}', 'destroy')->name('courses.delete');
+                Route::get('/', 'index')->name('index');
+                Route::get('/editar/{course}', 'edit')->name('edit');
+                Route::get('/ver/{course}', 'show')->name('show');
+                Route::post('/registrar', 'store')->name('store');
+                Route::post('/actualizar/{course}', 'update')->name('update');
+                Route::delete('/eliminar/{course}', 'destroy')->name('delete');
             });
 
 
@@ -323,31 +322,31 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
 
         // -------------------- EXAMS ---------------------
 
-        Route::group(['prefix' => 'examenes'], function () {
+        Route::group(['prefix' => 'examenes', 'as' => 'exams.'], function () {
 
             Route::controller(AdminExamsController::class)->group(function () {
 
-                Route::get('/', 'index')->name('exams.index');
-                Route::get('/editar/{exam}', 'edit')->name('exams.edit');
-                Route::post('/registrar', 'store')->name('exams.store');
-                Route::post('/actualizar/{exam}', 'update')->name('exams.update');
-                Route::post('/eliminar/{exam}', 'destroy')->name('exams.destroy');
+                Route::get('/', 'index')->name('index');
+                Route::get('/editar/{exam}', 'edit')->name('edit');
+                Route::post('/registrar', 'store')->name('store');
+                Route::post('/actualizar/{exam}', 'update')->name('update');
+                Route::post('/eliminar/{exam}', 'destroy')->name('destroy');
             });
 
             Route::controller(AdminDynamicQuestionsController::class)->group(function () {
 
-                Route::get('/ver/{exam}', 'index')->name('exams.showQuestions');
-                Route::get('/ver-enunciado/{question}', 'show')->name('exams.questions.show');
-                Route::get('/obtener-tipo-de-enunciado', 'getQuestionType')->name('exams.questions.getType');
-                Route::post('/registrar-enunciado/{exam}', 'store')->name('exams.questions.store');
-                Route::post('/actualizar-enunciado/{question}', 'update')->name('exams.questions.update');
-                Route::post('/eliminar-enunciado/{question}', 'destroy')->name('exams.questions.destroy');
+                Route::get('/ver/{exam}', 'index')->name('showQuestions');
+                Route::get('/ver-enunciado/{question}', 'show')->name('questions.show');
+                Route::get('/obtener-tipo-de-enunciado', 'getQuestionType')->name('questions.getType');
+                Route::post('/registrar-enunciado/{exam}', 'store')->name('questions.store');
+                Route::post('/actualizar-enunciado/{question}', 'update')->name('questions.update');
+                Route::post('/eliminar-enunciado/{question}', 'destroy')->name('questions.destroy');
             });
 
             Route::controller(AdminDynamicAlternativeController::class)->group(function () {
 
-                Route::post('/alternativa/{alternative}/eliminar', 'destroy')->name('exams.alternatives.destroy');
-                Route::post('/alternativa/{alternative}/eliminar-archivo', 'destroyFile')->name('exams.alternatives.deleteFile');
+                Route::post('/alternativa/{alternative}/eliminar', 'destroy')->name('alternatives.destroy');
+                Route::post('/alternativa/{alternative}/eliminar-archivo', 'destroyFile')->name('alternatives.deleteFile');
             });
         });
 
@@ -499,70 +498,117 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
         });
     });
 
+
+
     // -------  RUTAS DE LA INTERFAZ AULA ---------------
 
-    Route::group(['middleware' => 'aula', 'prefix' => 'aula'], function () {
+    Route::group(['middleware' => 'aula', 'prefix' => 'aula', 'as' => 'aula.'], function () {
 
-        Route::get('/inicio', [AulaHomeController::class, 'index'])->name('aula.index');
+        // -------------- GENERAL --------------------
+
+        Route::get('/inicio', [AulaHomeController::class, 'index'])->name('index');
 
         Route::controller(AulaProfileController::class)->group(function () {
 
-            Route::group(['prefix' => 'perfil'], function () {
+            Route::group(['prefix' => 'perfil', 'as' => 'profile.'], function () {
 
-                Route::get('/', 'index')->name('aula.profile.index');
-                Route::get('/editar-avatar/{user}', 'editUserAvatar')->name('aula.userAvatar.edit');
-                Route::post('/actualizar-avatar/{user}', 'updateUserAvatar')->name('aula.profile.updateUserAvatar');
-                // Route::post('/actualizar-contraseña/{user}', 'updatePassword')->name('aula.profile.updatePassword');
+                Route::get('/', 'index')->name('index');
+                Route::get('/editar-avatar/{user}', 'editUserAvatar')->name('userAvatar.edit');
+                Route::post('/actualizar-avatar/{user}', 'updateUserAvatar')->name('updateUserAvatar');
+                // Route::post('/actualizar-contraseña/{user}', 'updatePassword')->name('updatePassword');
             });
         });
 
+        // ------------- NO SUPERVISOR ------------------------
 
-        Route::get('/e-learning', [AulaCourseController::class, 'index'])->name('aula.course.index');
+        Route::group([
+            'middleware' => 'check.role:participants,instructor,security_manager,security_manager_admin',
+            'prefix' => 'e-learning'
+        ], function () {
+            
+            Route::get('/', [AulaCourseController::class, 'index'])->name('course.index');
 
-        Route::group(['middleware' => 'check.role:participants'], function () {
+            // -------------- FIRMA DIGITAL ------------------
 
-            Route::get('/e-learning/Alumno/{course}', [AulaCoursePartController::class, 'show'])->name('aula.course.participant.show');
-            Route::get('/e-learning/Alumno/{course}/evaluaciones', [AulaEvaluationController::class, 'index'])->name('aula.course.evaluation.index');
-            Route::get('/e-learning/Alumno/{certification}/pregunta/{num_question}', [QuizController::class, 'show'])->name('aula.course.quiz.show');
-            Route::get('/e-learning/Alumno/{course}/curso-online', [AulaOnlineLessonController::class, 'index'])->name('aula.course.onlinelesson.index');
-            Route::get('/e-learning/Alumno/clase-online/{event}', [AulaOnlineLessonController::class, 'show'])->name('aula.course.onlinelesson.show');
+            //------- aula.signatures.* -------------
+            Route::group(['prefix' => 'firma-digital', 'as' => 'signatures.'], function () {
 
+                Route::controller(AulaSignaturesController::class)->group(function () {
 
-            Route::get('/cursos-libres', [AulaFreeCourseController::class, 'index'])->name('aula.freecourse.index');
-            Route::get('/cursos-libres/categoria/{category}', [AulaFreeCourseController::class, 'showCategory'])->name('aula.freecourse.showCategory');
-            Route::get('/cursos-libres/curso/{course}/{current_chapter}', [AulaFreeCourseController::class, 'showChapter'])->name('aula.freecourse.showChapter');
-            Route::post('/cursos-libres/iniciar/{course}', [AulaFreeCourseController::class, 'start'])->name('aula.freecourse.start');
-            Route::post('/cursos-libres/AjaxSavetime/{current_chapter}', [AulaFreeCourseController::class, 'updateProgressTime'])->name('aula.freecourse.saveTime');
-            Route::patch('/cursos-libres/actualizar/{current_chapter}/{new_chapter}/{course}', [AulaFreeCourseController::class, 'updateChapter'])->name('aula.freecourse.update');
-
-
-            Route::get('/mi-progreso', [AulaMyProgressController::class, 'index'])->name('aula.myprogress.index');
-
-            Route::group(['prefix' => 'encuestas'], function () {
-
-                Route::controller(AulaSurveysController::class)->group(function () {
-
-                    Route::get('/', 'index')->name('aula.surveys.index');
-                    Route::get('/iniciar/{userSurvey}', 'start')->name('aula.surveys.start');
-                    Route::get('/{user_survey}/{num_question}', 'show')->name('aula.surveys.show');
-                    Route::patch('/actualizar/{user_survey}/{group_id}', 'update')->name('aula.surveys.update');
+                    Route::get('/', 'index')->name('index');
+                    Route::get('/crear-firma', 'create')->name('create');
+                    Route::post('/registrar-firma', 'store')->name('store');
                 });
             });
+
+            // ------------- PARTICIPANTE ------------------
+
+            Route::group(['middleware' => 'check.role:participants'], function () {
+
+                // -------- E - LEARNING -----------------
+
+                Route::group(['prefix' => 'alumno', 'as' => 'course.'], function () {
+
+                    Route::get('/{course}', [AulaCoursePartController::class, 'show'])->name('participant.show');
+
+                    Route::get('/{course}/evaluaciones', [AulaEvaluationController::class, 'index'])->name('evaluation.index');
+
+                    Route::get('/{course}/curso-online', [AulaOnlineLessonController::class, 'index'])->name('onlinelesson.index');
+                    Route::get('/clase-online/{event}', [AulaOnlineLessonController::class, 'show'])->name('onlinelesson.show');
+
+                    Route::get('/{certification}/pregunta/{num_question}', [QuizController::class, 'show'])->name('quiz.show');
+                    Route::post('/{certification}', [QuizController::class, 'start'])->name('quiz.start');
+                    Route::patch('/{certification}/{exam}/pregunta/{num_question}/{key}/{evaluation}', [QuizController::class, 'update'])->name('quiz.update');
+                });
+
+                // ------------ CURSOS LIBRES ---------------
+
+                Route::group(['prefix' => 'cursos-libres', 'as' => 'freecourse.'], function () {
+
+                    Route::controller(AulaFreeCourseController::class)->group(function () {
+
+                        Route::get('/', 'index')->name('index');
+                        Route::get('/categoria/{category}', 'showCategory')->name('showCategory');
+                        Route::get('/curso/{course}/{current_chapter}','showChapter')->name('showChapter');
+                        Route::post('/iniciar/{course}', 'start')->name('start');
+                        Route::post('/AjaxSavetime/{current_chapter}', 'updateProgressTime')->name('saveTime');
+                        Route::patch('/actualizar/{current_chapter}/{new_chapter}/{course}', 'updateChapter')->name('update');
+                    });
+                });
+
+                // ---------- MI PROGESO --------------
+
+                Route::get('/mi-progreso', [AulaMyProgressController::class, 'index'])->name('myprogress.index');
+
+                // ------------ ENCUESTAS --------------
+
+                Route::group(['prefix' => 'encuestas', 'as' => 'surveys.'], function () {
+
+                    Route::controller(AulaSurveysController::class)->group(function () {
+
+                        Route::get('/', 'index')->name('index');
+                        Route::get('/iniciar/{userSurvey}', 'start')->name('start');
+                        Route::get('/{user_survey}/{num_question}', 'show')->name('show');
+                        Route::patch('/actualizar/{user_survey}/{group_id}', 'update')->name('update');
+                    });
+                });
+            });
+
+            // -------------- INSTRUCTOR --------------------
+
+            Route::group(['middleware' => 'check.role:instructor'], function () {
+                Route::get('/Instructor/{course}', [AulaCourseInstController::class, 'show'])->name('course.instructor.show');
+            });
+
         });
 
-        Route::group(['middleware' => 'check.role:instructor'], function () {
-            Route::get('/e-learning/Instructor/{course}', [AulaCourseInstController::class, 'show'])->name('aula.course.instructor.show');
-        });
+        Route::get('/e-learning/{course}/carpetas', [AulaFolderController::class, 'index'])->name('course.folder.index');
+        Route::get('/e-learning/{course}/carpeta/{folder}', [AulaFolderController::class, 'show'])->name('course.folder.show');
 
+        Route::get('/e-learning/Carpeta/descargar/{file}', [AulaFolderController::class, 'downloadFile'])->name('file.download');
 
-        Route::get('/e-learning/{course}/carpetas', [AulaFolderController::class, 'index'])->name('aula.course.folder.index');
-        Route::get('/e-learning/{course}/carpeta/{folder}', [AulaFolderController::class, 'show'])->name('aula.course.folder.show');
+        Route::get('/e-learning/ajax-certification/{certification}', [AulaEvaluationController::class, 'getAjaxCertification'])->name('course.ajax.certification');
 
-        Route::get('/e-learning/Carpeta/descargar/{file}', [AulaFolderController::class, 'downloadFile'])->name('aula.file.download');
-
-        Route::get('/e-learning/ajax-certification/{certification}', [AulaEvaluationController::class, 'getAjaxCertification'])->name('aula.course.ajax.certification');
-
-        Route::post('/e-learning/{certification}', [QuizController::class, 'start'])->name('aula.course.quiz.start');
-        Route::patch('/e-learning/{certification}/{exam}/pregunta/{num_question}/{key}/{evaluation}', [QuizController::class, 'update'])->name('aula.course.quiz.update');
+       
     });
 });

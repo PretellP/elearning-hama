@@ -40,15 +40,16 @@ class LoginController extends Controller
         switch(Auth::user()->role)
         {
             case 'admin':
-            case 'security_manager':
             case 'super_admin':
-            case 'supervisor':
-            case 'technical_support':
                 $this->redirectTo = route('admin.home.index');
                 return $this->redirectTo;
                 break;
             case 'participants':
             case 'instructor':
+            case 'security_manager':
+            case 'security_manager_admin':
+            case 'supervisor':
+            case 'technical_support':
                 $this->redirectTo = route('aula.index');
                 return $this->redirectTo;
                 break;

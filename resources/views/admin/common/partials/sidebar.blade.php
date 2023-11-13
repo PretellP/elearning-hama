@@ -60,7 +60,7 @@
             <li class="{{setActive('admin.coursetypes.*')}}">
                 <a href="{{route('admin.coursetypes.index')}}" class="nav-link">
                     <i class="fa-solid fa-book-bookmark"></i>
-                    <span>Tipos de cursos</span>
+                    <span>Tipos de curso</span>
                 </a>
             </li>
 

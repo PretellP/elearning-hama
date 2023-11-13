@@ -2,7 +2,7 @@
     <div class="img-profile-page-box">
         <img src="{{ verifyUserAvatar($user->avatar())}}" alt="">
     </div>
-    <div class="edit-avatar-btn" data-url="{{ route('aula.userAvatar.edit', $user) }}">
+    <div class="edit-avatar-btn" data-url="{{ route('aula.profile.userAvatar.edit', $user) }}">
         <label for="user-avatar-input">
             <i class="fa-solid fa-pencil"></i>
         </label>

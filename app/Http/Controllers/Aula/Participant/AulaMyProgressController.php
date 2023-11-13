@@ -15,13 +15,15 @@ class AulaMyProgressController extends Controller
         $courses = $courseService->getCoursesBasedOnRole($user);
 
         $freeCourses = $freeCourseService->withFreeCourseRelationshipsQuery()
-                                        ->where('active', 'S')
-                                        ->with('courseChapters.progressUsers')
-                                        ->whereHas('courseChapters.progressUsers', function($query) use ($user) {
-                                            $query->where('user_id', $user->id);
-                                        })
-                                        ->get();
-                            
+            ->where('active', 'S')
+            ->with('courseChapters.progressUsers', function ($q) use ($user) {
+                $q->wherePivot('user_id', $user->id);
+            })
+            ->whereHas('courseChapters.progressUsers', function ($query) use ($user) {
+                $query->where('user_course_progress.user_id', $user->id);
+            })
+            ->get();
+
         return view('aula.viewParticipant.myprogress.index', [
             'courses' => $courses,
             'freeCourses' => $freeCourses,

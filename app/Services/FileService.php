@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\File;
+use App\Models\User;
 use Exception;
 use Storage;
 
@@ -15,12 +16,7 @@ class FileService
 
         $file_data = $this->storeInStorage($directory, $filename, $file, $storage);
 
-        $stored_file = new File([
-            "file_path" => $file_data[0],
-            "file_url" => $file_data[1],
-            "file_type" => $file_type,
-            "category" => $category,
-        ]);
+        $stored_file = $this->getStoredFile($file_data[0], $file_data[1], $file_type, $category);
 
         if ($relation == 'one_one') {
             return $model->file()->save($stored_file);
@@ -88,6 +84,18 @@ class FileService
         return array($file_path, $file_url);
     }
 
+    private function getStoredFile($file_path, $file_url, $file_type, $category)
+    {
+        $stored_file = new File([
+            "file_path" => $file_path,
+            "file_url" => $file_url,
+            "file_type" => $file_type,
+            "category" => $category,
+        ]);
+
+        return $stored_file;
+    }
+
     public function download($file, $storage)
     {
         if (Storage::disk($storage)->exists($file->file_path)) {
@@ -96,4 +104,33 @@ class FileService
 
         return false;
     }
+
+    public function storeSignature(User $user, $imgBase64, $file_type, $category, $belongsTo, $storage)
+    {
+        $directory = $this->makeDirectory($user, $file_type, $category, $belongsTo);
+        $image = str_replace('data:image/png;base64,', '', $imgBase64);
+        $image = str_replace(' ', '+', $image);
+        $image_name = $user->dni . '_' . time() . '.png';
+        $full_path = $directory . '/' . $image_name;
+
+        if (Storage::disk($storage)->put($full_path, base64_decode($image))) {
+
+            $files = $user->files()->where('category', 'firmas')->get();
+
+            if ($files->isNotEmpty()) {
+                foreach ($files as $file) {
+                    $this->destroy($file, $storage);
+                }
+            }
+
+            $file_url = Storage::disk($storage)->url($full_path);
+            $file = $this->getStoredFile($full_path, $file_url, $file_type, $category);
+
+            if($user->file()->save($file)){
+                return $user->update(['signature' => 'S']);
+            };
+        }
+
+        return false;
+    }   
 }

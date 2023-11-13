@@ -120,6 +120,7 @@
 
         </div>
 
+        
 
         <div class="progress-section-title-container">
             Mis Cursos libres

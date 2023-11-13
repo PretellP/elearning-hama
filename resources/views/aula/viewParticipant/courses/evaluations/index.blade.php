@@ -28,14 +28,15 @@
             @foreach($certifications as $certification)
 
             @php
-            
+
             updateIfNotFinished($certification);
             $ownerCompany = $certification->event->exam->ownerCompany;
             $event = $certification->event;
             $status = $certification->status;
-            $availableStart = getCurrentDate() == $event->date && 
-                                $certification->status == 'pending' && 
-                                $certification->assist_user == 'S' ? true : false;
+            $availableStart = getCurrentDate() == $event->date &&
+                                $certification->status == 'pending' &&
+                                $certification->assist_user == 'S' && 
+                                Auth::user()->signature == 'S';
 
             @endphp
 
@@ -94,13 +95,12 @@
 
                         @if ($availableStart)
 
-                        <!-- Button trigger modal -->
-                        <button type="button" class="btn variable-info btn-evaluation-start" data-toggle="modal"
-                            data-target="#instructions-modal" data-send='{{route('aula.course.ajax.certification',
-                            $certification)}}' data-url="{{route('aula.course.quiz.start', $certification)}}">
-                            Iniciar &nbsp;
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </button>
+                            <button type="button" class="btn variable-info btn-evaluation-start" data-toggle="modal"
+                                data-target="#instructions-modal" data-send='{{route('aula.course.ajax.certification', $certification)}}' 
+                                data-url="{{route('aula.course.quiz.start', $certification)}}">
+                                Iniciar &nbsp;
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
 
                         @elseif ($certification->status == 'in_progress')
 
@@ -116,45 +116,54 @@
 
                         @elseif ($status == 'finished')
 
-                        @if ($certification->score < $event->min_score) <div class="variable-info" style="color: rgb(189, 20, 20)">
+                        @if ($certification->score < $event->min_score) 
+                        <div class="variable-info"
+                            style="color: rgb(189, 20, 20)">
                             Desaprobado &nbsp;
                             <i class="fa-regular fa-circle-xmark"></i>
+                        </div>
+                        @else
+                        <div class="variable-info" style="color: rgb(48, 189, 20)">
+                            Aprobado &nbsp;
+                            <i class="fa-regular fa-circle-check"></i>
+                        </div>
+                        @endif
+
+                        @elseif($certification->assist_user == 'N')
+
+                        <div class="variable-info" style="background-color: rgba(189, 20, 20, 0.486)">
+                            No se ha marcado asistencia &nbsp;
+                            <i class="fa-solid fa-calendar-xmark"></i>
+                        </div>
+
+                        @elseif(Auth::user()->signature != 'S')
+
+                        <div class="variable-info" style="background-color: rgba(189, 20, 20, 0.486)">
+                            No tiene firma &nbsp;
+                            <i class="fa-solid fa-signature"></i>
+                        </div>
+
+                        @else
+
+                        <div class="variable-info" style="background-color: rgba(189, 20, 20, 0.486)">
+                            Fuera de Fecha &nbsp;
+                            <i class="fa-solid fa-calendar-xmark"></i>
+                        </div>
+
+                        @endif
+
                     </div>
-                    @else
-                    <div class="variable-info" style="color: rgb(48, 189, 20)">
-                        Aprobado &nbsp;
-                        <i class="fa-regular fa-circle-check"></i>
-                    </div>
-                    @endif
-
-                    @elseif($certification->assist_user == 'N')
-
-                    <div class="variable-info" style="background-color: rgba(189, 20, 20, 0.486)">
-                        No se ha marcado asistencia &nbsp;
-                        <i class="fa-solid fa-calendar-xmark"></i>
-                    </div>
-
-                    @else
-
-                    <div class="variable-info" style="background-color: rgba(189, 20, 20, 0.486)">
-                        Fuera de Fecha &nbsp;
-                        <i class="fa-solid fa-calendar-xmark"></i>
-                    </div>
-
-                    @endif
 
                 </div>
-
             </div>
-        </div>
 
-        @endforeach
+            @endforeach
+
+        </div>
 
     </div>
 
-</div>
-
-@endsection
+    @endsection
 
 
 
@@ -162,58 +171,59 @@
 
 
 
-@section('modals')
+    @section('modals')
 
-<!-- START QUIZ MODAL -->
+    <!-- START QUIZ MODAL -->
 
-<div class="modal fade" id="instructions-modal" tabindex="-1" aria-labelledby="instructionsModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="instructionsModalLabel">
-                    CARACTERÍSTICAS DE LA EVALUACIÓN
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="subtitle">
-                    Lea las siguientes instrucciones antes de comenzar la evaluación:
+    <div class="modal fade" id="instructions-modal" tabindex="-1" aria-labelledby="instructionsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="instructionsModalLabel">
+                        CARACTERÍSTICAS DE LA EVALUACIÓN
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
+                <div class="modal-body">
+                    <div class="subtitle">
+                        Lea las siguientes instrucciones antes de comenzar la evaluación:
+                    </div>
 
-                <ul>
-                    <li>
-                        Tiempo de examen <span class="ev-time"></span> minutos, <span class="qst-time"></span> minutos
-                        por pregunta.
-                    </li>
-                    <li>
-                        Una vez comenzado el examen debe permanecer en la página.
-                    </li>
-                    <li>
-                        No abrir o visualizar otras páginas mientras está desarrollando la evaluación, ya que la
-                        plataforma lo detectará como inactividad y cerrará la sesión automáticamente.
-                    </li>
-                    <li>
-                        Trabaje individualmente y no use su teléfono celular o páginas web para responder esta
-                        evaluación.
-                    </li>
-                </ul>
-            </div>
-            <div class="modal-footer">
+                    <ul>
+                        <li>
+                            Tiempo de examen <span class="ev-time"></span> minutos, <span class="qst-time"></span>
+                            minutos
+                            por pregunta.
+                        </li>
+                        <li>
+                            Una vez comenzado el examen debe permanecer en la página.
+                        </li>
+                        <li>
+                            No abrir o visualizar otras páginas mientras está desarrollando la evaluación, ya que la
+                            plataforma lo detectará como inactividad y cerrará la sesión automáticamente.
+                        </li>
+                        <li>
+                            Trabaje individualmente y no use su teléfono celular o páginas web para responder esta
+                            evaluación.
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
 
-                <form method="POST" class="evaluation-start-form">
-                    @csrf
-                    <button type="button" class="btn btn-close" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" id="btn-start-evaluation" class="btn btn-send">Comenzar Examen</button>
+                    <form method="POST" class="evaluation-start-form">
+                        @csrf
+                        <button type="button" class="btn btn-close" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" id="btn-start-evaluation" class="btn btn-send">Comenzar Examen</button>
 
-                </form>
+                    </form>
 
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
-@endsection
+    @endsection

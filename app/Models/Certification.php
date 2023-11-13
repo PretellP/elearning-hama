@@ -94,7 +94,7 @@ class Certification extends Model
         $now = getCurrentDate();
 
         if ($this->user->active != 'S') array_push($messages, "No está activo.");
-        // if($this->user->signature != 'S') array_push($messages, "No tiene firma.");
+        if($this->user->signature != 'S') array_push($messages, "No tiene firma.");
         if ($this->assist_user != 'S') array_push($messages, "No tiene asistencia.");
         if ($this->event->date != $now) array_push($messages, "Fuera de fecha.");
         if ($this->status == 'finished') array_push($messages, "Finalizó evaluación.");

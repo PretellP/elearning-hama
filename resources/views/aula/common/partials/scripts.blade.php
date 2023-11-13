@@ -48,8 +48,6 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
-
-
 <script src="{{asset('assets/common/modules/izitoast/js/iziToast.min.js')}}"></script>
 
 
@@ -63,6 +61,6 @@
 
 
 <script src="{{asset('assets/common/js/scripts.js')}}"></script>
-<script src="{{asset('assets/aula/js/custom.js')}}"></script>
+<script type="module" src="{{asset('assets/aula/js/custom.js')}}"></script>
 
 @yield('extra-script')

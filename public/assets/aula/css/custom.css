@@ -113,7 +113,8 @@ hr {
     gap: 5px;
 }
 
-.iziModal footer button
+.iziModal footer button,
+.iziModal footer a.btn
 {
     background-color: rgba(0, 0, 0, 0.205);
     color: white;
@@ -128,14 +129,17 @@ hr {
     align-items: center;
 }
 
-.iziModal footer button:hover
+.iziModal footer button:hover,
+.iziModal footer a.btn:hover
 {
-    opacity: 0.85;
+    opacity: 0.85 !important;
+    background-color: var(--first-color) !important;
 }
 
-.iziModal footer button.submit
+.iziModal footer button.submit,
+.iziModal footer a.submit
 {
-    background-color: var(--first-color);
+    background-color: var(--first-color) !important;
 }
 
 
@@ -588,13 +592,12 @@ body.sidebar-mini .main-sidebar .sidebar-menu>li>a>i {
     cursor: pointer;
 }
 
-#user_avatar_edit_modal
 .iziModal-header-title
 {
-    color: white;
+    color: white !important;
 }
 
-#user_avatar_edit_modal.iziModal 
+.iziModal 
 .iziModal-header.iziModal-noSubtitle .iziModal-header-icon
 {
     font-size: 17px;
