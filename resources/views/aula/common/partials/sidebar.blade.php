@@ -52,6 +52,14 @@
                     </li>
                 </ul>
             </li>
+            
+            <li class="">
+                <a href="" class="nav-link">
+                    <i class="fa-solid fa-signature"></i>
+                    <span>Firma Digital</span>
+                </a>
+            </li>
+
 
             <li class="{{setActive('aula.course.*')}}">
                 <a href="{{route('aula.course.index')}}" class="nav-link">

@@ -5,7 +5,7 @@
 
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'E-learning | Admin')</title>
+    <title>@yield('title', 'Hama Perú | Admin')</title>
 
 	<link rel="stylesheet" href="{{asset('assets/common/modules/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css')}}">
 

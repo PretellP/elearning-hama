@@ -444,18 +444,18 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
 
                     Route::controller(AdminSurveyStatementController::class)->group(function () {
 
-                        Route::get('/{group}', 'index')->name('admin.surveys.all.groups.statements.index');
-                        Route::get('/obtener-tipo-de-pregunta/{group}', 'getStatementType')->name('admin.surveys.all.groups.statements.getType');
-                        Route::get('/ver-pregunta/{statement}', 'show')->name('admin.surveys.all.groups.statements.show');
-                        Route::post('/{group}/registrar', 'store')->name('admin.surveys.all.groups.statement.store');
-                        Route::post('/actualizar/{statement}', 'update')->name('admin.surveys.all.groups.statements.update');
-                        Route::delete('/eliminar/{statement}', 'destroy')->name('admin.surveys.all.groups.statement.destroy');
+                        Route::get('/{group}', 'index')->name('surveys.all.groups.statements.index');
+                        Route::get('/obtener-tipo-de-pregunta/{group}', 'getStatementType')->name('surveys.all.groups.statements.getType');
+                        Route::get('/ver-pregunta/{statement}', 'show')->name('surveys.all.groups.statements.show');
+                        Route::post('/{group}/registrar', 'store')->name('surveys.all.groups.statement.store');
+                        Route::post('/actualizar/{statement}', 'update')->name('surveys.all.groups.statements.update');
+                        Route::delete('/eliminar/{statement}', 'destroy')->name('surveys.all.groups.statement.destroy');
                     });
 
                     Route::group(['prefix' => 'opciones'], function () {
 
                         Route::controller(AdminSurveyOptionController::class)->group(function () {
-                            Route::delete('/eliminar/{option}', 'destroy')->name('admin.surveys.all.groups.statement.options.destroy');
+                            Route::delete('/eliminar/{option}', 'destroy')->name('surveys.all.groups.statement.options.destroy');
                         });
                     });
                 });

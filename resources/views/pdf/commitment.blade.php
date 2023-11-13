@@ -341,7 +341,7 @@
         
         <div class="not-page-break mt-5">
 
-            <div class="text-center m-auto">
+            <div class="text-center m-auto mt-5">
 
                 <div class="me-2 d-inline-block">
                     <span class="italic">

@@ -138,7 +138,7 @@
             </li>
 
 
-            <li class="logout">
+            <li class="logout mt-5">
                 <a href="#" class="nav-link" onclick="event.preventDefault(); 
                 document.getElementById('logout-form').submit();">
                    <i class="fa-solid fa-right-from-bracket"></i>

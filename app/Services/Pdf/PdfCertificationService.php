@@ -48,12 +48,28 @@ class PdfCertificationService
         abort(403, 'Acceso no autorizado');
     }
 
+    public function exportExtCertificationPdf(Certification $certification)
+    {
+        if ($this->isEnableExport($certification)) {
+
+            $pdf = Pdf::loadView('pdf.external_certification', compact(
+                'certification',
+            ))->setPaper(array(0, 0, 580.00, 800.00), 'landscape');
+
+            $pdf_name = 'certificados_' . $certification->user->dni . '_' . $certification->event->id . '.pdf';
+
+            return $pdf->stream($pdf_name);
+        }
+
+        abort(403, 'Acceso no autorizado');
+    }
+
     public function exportWebCertificationPdf(Certification $certification)
     {
         if ($this->isEnableExport($certification)) {
 
             $original_image = $certification->event->user->file->file_url;
-            
+
             $mask = Image::make($original_image)
                 ->greyscale()
                 ->contrast(100)

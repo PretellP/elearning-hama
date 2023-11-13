@@ -58,6 +58,17 @@ class PdfCertificationController extends Controller
         return $this->pdfCertificationService->exportCommitmentPdf($certification, $miningUnit, $sufix);
     }
 
+    public function extCertificationPdf(Certification $certification)
+    {
+        $certification->load([
+            'course',
+            'event.user.file' => fn ($q) => $q->where('category', 'firmas'),
+            'event.responsable.file' => fn ($q2) => $q2->where('category', 'firmas'),
+        ]);
+
+        return $this->pdfCertificationService->exportExtCertificationPdf($certification);
+    }
+
     public function webCertificationPdf(Certification $certification)
     {
         $certification->load([

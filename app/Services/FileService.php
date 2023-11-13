@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\File;
 use Exception;
-use Illuminate\Support\Facades\Storage;
+use Storage;
 
 class FileService
 {
