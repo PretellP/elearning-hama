@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\{Event, User};
+use App\Models\{Course, Event, User};
 use Exception;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -142,7 +142,7 @@ class EventService
 
         if ($request->filled('search_company')) {
             $users = $users->where('company_id', $request['search_company']);
-        }       
+        }
 
         $allUsers = DataTables::of($users)
             ->addColumn('choose', function ($user) {
@@ -164,4 +164,40 @@ class EventService
 
         return $allUsers;
     }
+
+
+    // --------------- INSTRUCTOR ----------------------
+
+    public function getInstructorEventsDatatable(User $user, Course $course)
+    {
+        $query = Event::whereHas('course', function ($q) use ($course) {
+                            $q->where('courses.id', $course->id);
+                        })
+                        ->where('user_id', $user->id)
+                        ->with([
+                            'room',
+                            'exam.course'
+                        ])
+                        ->select('events.*');
+
+        $allEvents = DataTables::of($query)
+            ->editColumn('description', function ($event) {
+                return '<a href="'. route('aula.course.events.instructor.show', $event) .'">' . $event->description . '</a>';
+            })
+            ->editColumn('type', function ($event) {
+                return config('parameters.event_types')[verifyEventType($event->type)];
+            })
+            ->editColumn('active', function ($event) {
+                return getStatusButton($event->active);
+            })
+            ->editColumn('room.description', function ($event) {
+                return '<a href="'. route('aula.course.onlinelesson.show', $event) .'">' . $event->room->description . '</a>';
+            })
+            ->rawColumns(['description', 'active', 'room.description'])
+            ->make(true);
+
+        return $allEvents;
+    }
+
+
 }

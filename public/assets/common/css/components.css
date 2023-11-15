@@ -418,7 +418,7 @@ table.dataTable.no-footer {
 
 div.dataTables_wrapper div.dataTables_processing {
   font-size: 0 !important;
-  background-image: url("../img/spinner.svg") !important;
+  /* background-image: url("../img/spinner.svg") !important;
   background-color: #fff;
   background-size: 100%;
   width: 50px !important;
@@ -430,7 +430,7 @@ div.dataTables_wrapper div.dataTables_processing {
   -webkit-transform: translate(-50%, -50%) !important;
   transform: translate(-50%, -50%) !important;
   margin: 0 !important;
-  opacity: 1 !important;
+  opacity: 1 !important; */
 }
 
 /* 1.9 Date Range Picker */

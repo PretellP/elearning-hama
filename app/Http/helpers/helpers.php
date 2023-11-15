@@ -443,6 +443,13 @@ function getStatusText($status)
             $status === 1)  ? 'Activo' : 'Inactivo';
 }
 
+function getStatusButton($status)
+{
+    return '<span class="status ' . ($status == 'S' ? 'active' : 'inactive') . '">' . 
+                ($status == 'S' ? 'Activo' : 'Inactivo') . 
+            '</span>';
+}
+
 function getStatusRecomended($status)
 {
     return $status == 1
@@ -486,8 +493,7 @@ function verifyImage($file)
 {
     $url = asset('storage/img/common/no-image.png');
     if ($file) {
-        $url = $file->file_url == null ? $url
-            : $file->file_url;
+        $url = $file->file_url ?? $url;
 
         // TARDA DEMASIADO CUANDO SON VARIAS IMÁGENES
 

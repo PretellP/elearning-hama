@@ -21,8 +21,7 @@ class CertificationService
         if ($request->filled('from_status')) {
             if ($request['from_status'] == 'approved') {
                 $query->where('score', '>=', $event->min_score);
-            } 
-            elseif ($request['from_status'] == 'suspended') {
+            } elseif ($request['from_status'] == 'suspended') {
                 $query->where('score', '<', $event->min_score);
             }
         }
@@ -55,7 +54,7 @@ class CertificationService
                                 <input type="checkbox" name="flg_asist" ' . $certification->event_assist_status . '
                                     class="custom-switch-input flg_assist_user_checkbox ' . $certification->event_assist_status . '"
                                     ' . $certification->valid_assist_checked . '
-                                    data-url="' . route('admin.events.certification.updateAssist', $certification) . '">
+                                    data-url="' . route('events.certification.updateAssist', $certification) . '">
                                 <span class="custom-switch-indicator"></span>
                             </label>';
 
@@ -75,11 +74,11 @@ class CertificationService
 
                 if ($certification->evaluations_count > 0) {
                     $btn .= '<button data-toggle="modal" title="reiniciar" data-id="' .
-                    $certification->id . '" data-url="'. route('admin.events.certifications.reset', $certification) .'" 
+                        $certification->id . '" data-url="' . route('admin.events.certifications.reset', $certification) . '" 
                         data-original-title="edit" class="reset ms-3 btn btn-primary btn-sm
                         resetCertification-btn"><i class="fa-solid fa-rotate-right"></i></button>';
                 }
-                
+
                 if (
                     $certification->evaluations_count == 0
                 ) {
@@ -132,7 +131,6 @@ class CertificationService
 
                 $this->storeAll($event, $user, $miningUnitsIds);
                 $status = 'finished';
-                
             } else {
                 $note = 'Se ha excedido la capacidad de la sala';
                 $status = $i == 0 ? 'exceeded' : 'limitreached';
@@ -147,7 +145,7 @@ class CertificationService
     {
         $request['assist_user'] = $request['assist_user'] == 'true' ? 'S' : 'N';
 
-        return $certification->update($request->all());
+        return $certification->update($request->only('assist_user'));
     }
 
     public function update($request, Certification $certification)
@@ -181,7 +179,7 @@ class CertificationService
         $filteredDnis = array_diff($dnis, $event->participants->pluck('dni')->toArray());
 
         return User::whereIn('dni', $filteredDnis)->with(['company:id', 'miningUnits:id'])
-                ->has('company')->get();
+            ->has('company')->get();
     }
 
     private function getCertificationArrayData(User $user, string $assist, string $type)
@@ -210,7 +208,7 @@ class CertificationService
         $certification->testCertification()->associate($testCertification);
         $certification->save();
     }
-    
+
     public function reset(Certification $certification)
     {
         if ($certification->evaluations()->delete()) {
@@ -265,8 +263,7 @@ class CertificationService
             return $certification->update([
                 'score' => $rows[$key]['nota']
             ]);
-        }
-        else if ($context == 'area') {
+        } else if ($context == 'area') {
             return $certification->update([
                 'area' => $rows[$key]['area'],
                 'observation' => $rows[$key]['observacion']
@@ -279,6 +276,45 @@ class CertificationService
 
 
 
+    // ---------------- INSTRUCTOR -------------------
+
+    public function getInsParticipantsDatatable(User $user, Event $event)
+    {
+        $query = $event->certifications()->whereHas('event', function ($q) use ($user) {
+            $q->where('events.user_id', $user->id);
+        })
+            ->where('evaluation_type', 'certification')
+            ->with('user')
+            ->select('certifications.*');
+
+        $allCertifications = DataTables::of($query)
+            ->editColumn('status', function ($certification) {
+                $status = $certification->status;
+                $statusBtn = '<span class="status ' . $status . '">' .
+                    config('parameters.certification_status')[$status]
+                    . '</span>';
+
+                return $statusBtn;
+            })
+            ->editColumn('assist_user', function ($certification) {
+                $assit_btn = '<label class="custom-switch">
+                                        <input type="checkbox" name="flg_asist" ' . $certification->event_assist_status . '
+                                            class="custom-switch-input flg_assist_user_checkbox ' . $certification->event_assist_status . '"
+                                            ' . $certification->valid_assist_checked . '
+                                            data-url="' . route('events.certification.updateAssist', $certification) . '">
+                                        <span class="custom-switch-indicator"></span>
+                                    </label>';
+
+                return $assit_btn;
+            })
+            ->editColumn('user.profile_user', function ($certification) {
+                return $certification->user->profile_user ?? 'Pendiente';
+            })
+            ->rawColumns(['status', 'assist_user', 'enabled', 'action'])
+            ->make(true);
+
+        return $allCertifications;
+    }
 
 
     // ----------------- CERTIFICATION MODULE ------------------------
@@ -286,13 +322,13 @@ class CertificationService
     public function getCertificationDataTable(Request $request)
     {
         $query = Certification::with([
-                                    'user', 
-                                    'company',
-                                    'event.exam.course.type'
-                                ])
-                                ->where('status', 'finished')
-                                ->where('evaluation_type', 'certification')
-                                ->select('certifications.*');
+            'user',
+            'company',
+            'event.exam.course.type'
+        ])
+            ->where('status', 'finished')
+            ->where('evaluation_type', 'certification')
+            ->select('certifications.*');
 
         if ($request->filled('status')) {
             if ($request['status'] == 'approved') {
@@ -330,17 +366,17 @@ class CertificationService
                 return $certification->user->full_name_complete;
             })
             ->editColumn('event.description', function ($certification) {
-                return '<a href="'. route('admin.events.show', ['event' => $certification->event]) .'">'. 
-                            $certification->event->description 
-                        .'</a>';
+                return '<a href="' . route('admin.events.show', ['event' => $certification->event]) . '">' .
+                    $certification->event->description
+                    . '</a>';
             })
             ->editColumn('score', function ($certification) {
                 return $certification->score ?? '-';
             })
             ->addColumn('exam', function ($certification) {
-                $exam_icon = '<a href="'. route('admin.pdf.certification.exam', $certification) .'" target="_BLANK">
-                                    <img src="'. asset('assets/common/img/exam-icon.svg') .'" 
-                                    alt="examen-'. $certification->id .'"
+                $exam_icon = '<a href="' . route('admin.pdf.certification.exam', $certification) . '" target="_BLANK">
+                                    <img src="' . asset('assets/common/img/exam-icon.svg') . '" 
+                                    alt="examen-' . $certification->id . '"
                                     style="width:30px;">
                                 </a>';
 
@@ -348,75 +384,76 @@ class CertificationService
             })
             ->addColumn('certification', function ($certification) {
 
-                if ($certification->score >= $certification->event->min_score ) {
+                if ($certification->score >= $certification->event->min_score) {
 
                     $type = $certification->event->exam->course->type;
 
                     if ($type) {
 
                         if (Str::is('*EXTERNO*', strtoupper($type->name))) {
-                            $certification_icon = '<a href="'. route('pdf.export.ext_certification', $certification) .'" target="_BLANK">';
+                            $certification_icon = '<a href="' . route('pdf.export.ext_certification', $certification) . '" target="_BLANK">';
                         } else if (Str::is('*WEBINAR*', strtoupper($type->name))) {
-                            $certification_icon = '<a href="'. route('pdf.export.web_certification', $certification) .'" target="_BLANK">';
+                            $certification_icon = '<a href="' . route('pdf.export.web_certification', $certification) . '" target="_BLANK">';
                         } else {
-                            $certification_icon = '<a href="'. route('pdf.export.certification', $certification) .'" target="_BLANK">';
+                            $certification_icon = '<a href="' . route('pdf.export.certification', $certification) . '" target="_BLANK">';
                         }
-
                     } else {
-                        $certification_icon = '<a href="'. route('pdf.export.certification', $certification) .'" target="_BLANK">';
+                        $certification_icon = '<a href="' . route('pdf.export.certification', $certification) . '" target="_BLANK">';
                     }
 
-                    $certification_icon .= '<img src="'. asset('assets/common/img/certification-icon.svg') .'"
-                                                alt="certificado-'. $certification->id .'" 
+                    $certification_icon .= '<img src="' . asset('assets/common/img/certification-icon.svg') . '"
+                                                alt="certificado-' . $certification->id . '" 
                                                 style="width:30px;">
                                           </a>';
                 } else {
-                   $certification_icon = '-';
+                    $certification_icon = '-';
                 }
 
                 return $certification_icon;
             })
-            ->rawColumns(['exam', 'event.description','certification'])
+            ->rawColumns(['exam', 'event.description', 'certification'])
             ->make(true);
 
         return $allCertifications;
     }
-
-
-
-
 
     // ------------------- CERTIFICATIONS HOME -------------------
 
     public function getByFilters($request)
     {
         $query = Certification::with(
-                                    [
-                                        'course.type', 
-                                        'company:id,description',
-                                        'event:id,date',
-                                        'miningUnits',
-                                        'files' => fn($q) => $q->where('category', 'anexos')
-                                    ]
-                            )
-                            ->whereHas('course', function ($q2) {
-                                $q2->has('type');
-                            })
-                            ->whereHas('event', function ($q3) {
-                                $q3->whereRaw('certifications.score >= events.min_score');
-                            })
-                            ->whereHas('company', function ($q4) {
-                                $q4->where('active', 'S');
-                            })
-                            ->where('evaluation_type', 'certification')
-                            ->select('certifications.*');
+            [
+                'course.type',
+                'company:id,description',
+                'event:id,date',
+                'miningUnits',
+                'files' => fn ($q) => $q->where('category', 'anexos')
+            ]
+        )
+            ->whereHas('course', function ($q2) {
+                $q2->has('type');
+            })
+            ->whereHas('event', function ($q3) {
+                $q3->whereRaw('certifications.score >= events.min_score');
+            })
+            ->whereHas('company', function ($q4) {
+                $q4->where('active', 'S');
+            })
+            ->whereHas('event.user', function ($q5) {
+                $q5->where('signature', 'S');
+            })
+            ->whereHas('user', function ($q6) {
+                $q6->where('signature', 'S');
+            })
+            ->where('evaluation_type', 'certification')
+            ->select('certifications.*');
 
         if ($request->filled('dni')) {
             $query->whereHas('user', function ($q) use ($request) {
                 $q->where('dni', $request['dni']);
             });
         }
-                 
+
         return $query->get()->groupBy('course.course_type_id');
     }
 }

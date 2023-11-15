@@ -13,7 +13,7 @@
                         <i class="fa-solid fa-circle-chevron-left"></i> Cursos
                     </a>
                     <span> / {{$course->description}} </span> /
-                    <a href="{{route('aula.course.participant.show', $course)}}">
+                    <a href="{{route('aula.course.show', $course)}}">
                         MENÚ
                     </a> /
                     CONTENIDO
@@ -64,7 +64,7 @@
             @forelse ($folder->files as $file)
 
             <div class="file-box">
-                <a href="{{route('aula.file.download', $file)}}">
+                <a href="{{route('aula.course.file.download', $file)}}">
 
                     <img src="{{asset('assets/common/images/file-types/'.getFileExtension($file).'.svg')}}" alt="">
 

@@ -26,10 +26,8 @@ class Aula
         if(in_array($role, [
                             'instructor', 
                             'participants',
-                            'supervisor',
                             'security_manager',
                             'security_manager_admin',
-                            'technical_support'
                             ]))
         {
             return $next($request);

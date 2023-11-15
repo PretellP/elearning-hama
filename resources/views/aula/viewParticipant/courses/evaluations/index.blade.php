@@ -12,7 +12,7 @@
                         <i class="fa-solid fa-circle-chevron-left"></i> Cursos
                     </a>
                     <span> / {{$course->description}} </span> /
-                    <a href="{{route('aula.course.participant.show', $course)}}">
+                    <a href="{{route('aula.course.show', $course)}}">
                         MENÚ
                     </a> /
                     EVALUACIONES

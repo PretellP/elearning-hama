@@ -1,5 +1,4 @@
 "use strict";
-
 import {Toast, ToastError, SwalDelete} from '../../common/js/sweet-alerts.js'
 
 $(function() {

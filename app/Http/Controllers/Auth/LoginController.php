@@ -41,6 +41,8 @@ class LoginController extends Controller
         {
             case 'admin':
             case 'super_admin':
+            case 'supervisor':
+            case 'technical_support':
                 $this->redirectTo = route('admin.home.index');
                 return $this->redirectTo;
                 break;
@@ -48,8 +50,6 @@ class LoginController extends Controller
             case 'instructor':
             case 'security_manager':
             case 'security_manager_admin':
-            case 'supervisor':
-            case 'technical_support':
                 $this->redirectTo = route('aula.index');
                 return $this->redirectTo;
                 break;

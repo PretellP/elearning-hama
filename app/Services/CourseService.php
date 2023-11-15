@@ -74,8 +74,8 @@ class CourseService
 
         if ($user->role == 'instructor') {
             $courses = Course::whereHas('exams.events', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })
+                    $query->where('user_id', $user->id);
+                })
                 ->with([
                     'file' => fn ($query5) =>
                     $query5->where('file_type', 'imagenes')
@@ -87,14 +87,16 @@ class CourseService
                         ->select(DB::raw('count(distinct(certifications.user_id))'))
                         ->where('events.user_id', $user->id);
                 }])
+                ->withMax('events', 'date')
                 ->where('active', 'S')
-                ->get();
+                ->get()
+                ->sortByDesc('events_max_date');
 
         } else if ($user->role == 'participants') {
 
             $courses = Course::whereHas('exams.events.certifications', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
-            })
+                })
                 ->with([
                     'exams' => fn ($query2) =>
                     $query2->select('id', 'course_id')
@@ -127,8 +129,10 @@ class CourseService
                         ->where('category', 'cursos')
                         ->select('id', 'file_url', 'file_type', 'category', 'fileable_id', 'fileable_type')
                 ])
+                ->withMax('events', 'date')
                 ->where('active', 'S')
-                ->get();
+                ->get()
+                ->sortByDesc('events_max_date');
         }
 
         return $courses;

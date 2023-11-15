@@ -379,6 +379,7 @@ $(function () {
         var companiesTableEle = $('#companies-table');
         var getDataUrl = companiesTableEle.data('url');
         var companiesTable = companiesTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -663,6 +664,7 @@ $(function () {
         var roomsTableEle = $('#rooms-table');
         var getDataUrl = roomsTableEle.data('url');
         var roomsTable = roomsTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -935,6 +937,7 @@ $(function () {
         var usersTableEle = $('#users-table');
         var getDataTable = usersTableEle.data('url');
         var usersTable = usersTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -1507,6 +1510,7 @@ $(function () {
         var ownerCompaniesTableEle = $('#ownerCompanies-table');
         var getDataUrl = ownerCompaniesTableEle.data('url');
         var ownerCompaniesTable = ownerCompaniesTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -1705,6 +1709,7 @@ $(function () {
         var miningUnitTableEle = $('#mining-units-table');
         var getDataUrl = miningUnitTableEle.data('url');
         var miningUnitsTable = miningUnitTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -1871,6 +1876,7 @@ $(function () {
         var coursestypesTableEle = $('#coursetypes-table');
         var getDataUrl = coursestypesTableEle.data('url');
         var coursetypesTable = coursestypesTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -2097,6 +2103,7 @@ $(function () {
         var coursesTableEle = $('#courses-table');
         var getDataUrl = coursesTableEle.data('url');
         var coursesTable = coursesTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -2236,7 +2243,6 @@ $(function () {
                 })
             }
         })
-
 
         /* -------------- EDIT  ---------------*/
 
@@ -2448,6 +2454,7 @@ $(function () {
         var filesTableEle = $('#files-folder-course-table');
         var getDataUrl = filesTableEle.data('url');
         var filesTable = filesTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -2537,6 +2544,7 @@ $(function () {
         var freeCoursesTableEle = $('#freeCourses-table');
         var getDataUrl = freeCoursesTableEle.data('url');
         var freeCoursesTable = freeCoursesTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -3022,6 +3030,7 @@ $(function () {
         var freeCoursesTableCatShowEle = $('#freecourse-category-show-table');
         var getDataUrl = freeCoursesTableCatShowEle.data('url');
         var freeCoursesCatShowTable = freeCoursesTableCatShowEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -3890,6 +3899,7 @@ $(function () {
 
         function chapterTable(ele, lang, url) {
             var chaptersTable = ele.DataTable({
+                responsive: true,
                 language: lang,
                 serverSide: true,
                 processing: true,
@@ -4474,6 +4484,7 @@ $(function () {
         var examsTableEle = $('#exams-table');
         var getDataUrl = examsTableEle.data('url');
         var examsTable = examsTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -4802,6 +4813,7 @@ $(function () {
         var questionsTableEle = $('#questions-table');
         var getDataUrl = questionsTableEle.data('url');
         var questionsTable = questionsTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -5318,6 +5330,7 @@ $(function () {
     // ---------- QUESTIONS GENERAL --------------
 
     if ($('#question-type-container').length) {
+
 
         if ($('#dropdown-questions-create').length) {
 
@@ -5986,6 +5999,7 @@ $(function () {
         var eventsTableEle = $('#events-table');
         var getDataUrl = eventsTableEle.data('url');
         var eventsTable = eventsTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -6880,6 +6894,7 @@ $(function () {
         var certificationsTableEle = $('#certifications-table');
         var getDataUrl = certificationsTableEle.data('url');
         var certificationsTable = certificationsTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -7458,6 +7473,7 @@ $(function () {
                 var getDataUrl = usersParticipantsTableEle.data('url');
 
                 participantsTable = usersParticipantsTableEle.DataTable({
+                    responsive: true,
                     language: DataTableEs,
                     serverSide: true,
                     processing: true,
@@ -8497,6 +8513,7 @@ $(function () {
         var publishingsTableEle = $('#publishings-table');
         var getDataUrl = publishingsTableEle.data('url');
         var publishingsTable = publishingsTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -8920,6 +8937,7 @@ $(function () {
         var surveyTableEle = $('#surveys-table');
         var getDataUrl = surveyTableEle.data('url');
         surveyTable = surveyTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -9281,6 +9299,7 @@ $(function () {
         var surveyGroupsTableEle = $('#groups-statements-table');
         var getDataUrl = surveyGroupsTableEle.data('url');
         surveyGroupsTable = surveyGroupsTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -9544,6 +9563,7 @@ $(function () {
         var surveyStatementsTableEle = $('#statements-table');
         var getDataUrl = surveyStatementsTableEle.data('url');
         surveyStatementsTable = surveyStatementsTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -9940,12 +9960,12 @@ $(function () {
             });
         }
 
-
         /* ----- PROFILE SURVEYS TABLE ------*/
 
         var profileSurveysTableEle = $('#profile-surveys-table')
         var getDataUrl = profileSurveysTableEle.data('url')
         profileSurveysTable = profileSurveysTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -9975,9 +9995,6 @@ $(function () {
             ]
             // dom: 'rtip'
         });
-
-
-
     }
 
     // ----------- GENERAL SURVEYS REPORT -------------
@@ -10033,6 +10050,7 @@ $(function () {
         var userSurveysTableEle = $('#general-user-surveys-table')
         var getDataUrl = userSurveysTableEle.data('url')
         userSurveysTable = userSurveysTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -10156,6 +10174,7 @@ $(function () {
         var certificationIndexTableEle = $('#certifications-index-table');
         var getDataUrl = certificationIndexTableEle.data('url');
         certifcationIndexTable = certificationIndexTableEle.DataTable({
+            responsive: true,
             language: DataTableEs,
             serverSide: true,
             processing: true,
@@ -10185,8 +10204,6 @@ $(function () {
                 [0, 'desc']
             ]
         });
-
-
     }
 
 

@@ -7,12 +7,15 @@
 
     <title>@yield('title', 'Hama Perú | Admin')</title>
 
-	<link rel="stylesheet" href="{{asset('assets/common/modules/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css')}}">
+	{{-- <link rel="stylesheet" href="{{asset('assets/common/modules/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css')}}"> --}}
 
    <!-- General CSS Files -->
 	<link rel="stylesheet" href="{{asset('assets/common/modules/bootstrap/css/bootstrap.min.css')}}">
 
 	<script src="https://kit.fontawesome.com/469f55554f.js" crossorigin="anonymous"></script>
+
+
+	<link href="https://cdn.datatables.net/v/bs4/dt-1.13.7/r-2.5.0/datatables.min.css" rel="stylesheet">
 
 	<!-- CSS Libraries -->
 	<link rel="stylesheet" href="{{asset('assets/common/modules/jqvmap/dist/jqvmap.min.css')}}">
@@ -23,6 +26,7 @@
 
 	{{-- Date range picker --}}
 	<link rel="stylesheet" href="{{asset('assets/common/modules/bootstrap-daterangepicker/daterangepicker.css')}}">
+
 	<link rel="stylesheet" href="{{asset('assets/common/modules/bootstrap-timepicker/css/bootstrap-timepicker.min.css')}}">
 
 	<link rel="stylesheet" href="{{asset('assets/common//modules/izitoast/css/iziToast.min.css')}}">
@@ -32,6 +36,7 @@
 	<link rel="stylesheet" href="{{asset('assets/common/modules/dropzonejs/dropzone.css')}}">
 
 	<!-- Template CSS -->
+
 	<link rel="stylesheet" href="{{asset('assets/common/css/style.css')}}">
 	<link rel="stylesheet" href="{{asset('assets/common/css/components.css')}}">
 
@@ -39,10 +44,11 @@
 
 	@yield('extra-head')
 
-
 	<link rel="stylesheet" href="{{asset('assets/admin/css/custom.css')}}">
 	<link rel="stylesheet" href="{{asset('assets/common/css/fonts.css')}}">
 
-	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+	{{-- <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css"> --}}
+
+	{{-- <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.css" rel="stylesheet"> --}}
 
 </head>

@@ -4,13 +4,16 @@
 <script src="{{asset('assets/common/js/jquery.validator.js')}}"></script>
 <script src="{{asset('assets/common/modules/popper.js')}}"></script>
 <script src="{{asset('assets/common/modules/tooltip.js')}}"></script>
+
 <script src="{{asset('assets/common/modules/bootstrap/js/bootstrap.min.js')}}"></script>
 
 
+<script src="https://cdn.datatables.net/v/bs4/dt-1.13.7/r-2.5.0/datatables.min.js"></script>
 
-<script src="{{asset('assets/common/modules/datatables/datatables.min.js')}}"></script>
-<script src="{{asset('assets/common/modules/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js')}}"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+{{-- <script src="{{asset('assets/common/modules/datatables/datatables.min.js')}}"></script> --}}
+{{-- <script src="{{asset('assets/common/modules/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js')}}"></script> --}}
+{{-- <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script> --}}
+{{-- <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.js"></script> --}}
 {{-- <script src="{{asset('vendor/datatables/buttons.server-side.js')}}"></script> --}}
 
 <script src="{{asset('assets/common/modules/nicescroll/jquery.nicescroll.min.js')}}"></script>
@@ -38,6 +41,7 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script src="{{asset('assets/common/modules/dropzonejs/min/dropzone.min.js')}}"></script>
+
 
 @yield('extra-script')
 

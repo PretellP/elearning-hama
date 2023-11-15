@@ -35,7 +35,7 @@
                             {{$course->description}}
                         </div>
                         <a class="btn-start"
-                            href="{{route('aula.course.participant.show', $course)}}"
+                            href="{{route('aula.course.show', $course)}}"
                             class="btn-start">
                             Ingresar
                         </a>

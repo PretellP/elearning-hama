@@ -53,7 +53,7 @@
                 </ul>
             </li>
 
-            @can('denySupervisor')
+            @can('denySecurity')
             
             <li class="{{setActive('aula.signatures.*')}}">
                 <a href="{{ route('aula.signatures.index') }}" class="nav-link">
@@ -61,6 +61,8 @@
                     <span>Firma Digital</span>
                 </a>
             </li>
+
+            @endcan
             
             <li class="{{setActive('aula.course.*')}}">
                 <a href="{{route('aula.course.index')}}" class="nav-link">
@@ -68,10 +70,8 @@
                     <span>E-Learning</span>
                 </a>
             </li>
-
-            @endcan
            
-            @can(['denyInstructor', 'denySupervisor'])
+            @can(['denyInstructor', 'denySecurity'])
 
             <li class="{{setActive('aula.freecourse.*')}}">
                 <a href="{{route('aula.freecourse.index')}}" class="nav-link">

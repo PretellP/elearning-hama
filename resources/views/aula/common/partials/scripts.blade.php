@@ -35,6 +35,9 @@
 <script src="{{asset('assets/common/modules/chart.min.js')}}"></script>
 
 
+<script src="https://cdn.datatables.net/v/bs4/dt-1.13.7/r-2.5.0/datatables.min.js"></script>
+
+
 <script src="{{asset('assets/common/modules/summernote/summernote-bs4.js')}}"></script>
 <script src="{{asset('assets/common/modules/summernote/lang/summernote-es-ES.js')}}"></script>
 

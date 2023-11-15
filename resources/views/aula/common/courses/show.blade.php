@@ -23,6 +23,9 @@
             
         <div class="row navigation-boxes-container">
 
+
+            @can('denySecurity')
+
             <a href="{{route('aula.course.folder.index', $course)}}" class="link-box-navigation-course">
                 <div class="navigation-box content card">
                     <div class="img-container">
@@ -50,7 +53,10 @@
                     </div>
                 </div>
             </a>
-        
+            @endcan
+
+            @can(['denyInstructor', 'denySecurity'])
+
             <a href="{{route('aula.course.evaluation.index', $course)}}" class="link-box-navigation-course">
                 <div class="navigation-box evaluation card">
                     <div class="img-container">
@@ -64,7 +70,46 @@
                     </div>
                 </div>
             </a>
-        
+
+            @endcan
+
+            @can('allowInstructor')
+                
+            <a href="{{ route('aula.course.events.instructor.index', $course) }}" class="link-box-navigation-course">
+                <div class="navigation-box evaluation card">
+                    <div class="img-container">
+                        <img src="{{asset('assets/aula/img/courses/events.png')}}" alt="">
+                    </div>
+                    <div class="text-nav-container">
+                        <span>
+                            Eventos
+                        </span>
+                        <span class="bg-nav-course-box"></span>
+                    </div>
+                </div>
+            </a>
+
+            @endcan
+
+
+            @can('allowSecurity')
+            
+            <a href="" class="link-box-navigation-course">
+                <div class="navigation-box evaluation card">
+                    <div class="img-container">
+                        <img src="{{asset('assets/aula/img/courses/events.png')}}" alt="">
+                    </div>
+                    <div class="text-nav-container">
+                        <span>
+                            Eventos por firmar
+                        </span>
+                        <span class="bg-nav-course-box"></span>
+                    </div>
+                </div>
+            </a>
+                
+            @endcan
+
         </div>
 
 

@@ -11,6 +11,8 @@
 
 	<script src="https://kit.fontawesome.com/469f55554f.js" crossorigin="anonymous"></script>
 
+	<link href="https://cdn.datatables.net/v/bs4/dt-1.13.7/r-2.5.0/datatables.min.css" rel="stylesheet">
+
 	<!-- CSS Libraries -->
 	<link rel="stylesheet" href="{{asset('assets/common/modules/jqvmap/dist/jqvmap.min.css')}}">
 	<link rel="stylesheet" href="{{asset('assets/common/modules/summernote/summernote-bs4.css')}}">
@@ -40,6 +42,8 @@
 
 	<!-- VIDEO.JS ---->
 	<link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
+	
+
 
 
 </head>

@@ -27,6 +27,15 @@
             @endphp
 
             <div class="card course-card">
+                @if ($course->events_max_date == getCurrentDate())
+                <div class="disclaimer-current-event">
+                    <span class="text-white font-italic">
+                        <i class="fa-regular fa-calendar-check me-2"></i>
+                        Tiene eventos programados para hoy
+                    </span>
+                </div>
+                @endif
+                
                 <div class="course-img-container">
                     <img class="card-img-top course-img" src="{{verifyImage($course->file)}}"
                         alt="Card image cap">
@@ -35,11 +44,7 @@
                 <div class="card-body">
 
                     <div class="start-button-container">
-                        @if(Auth::user()->role == 'participants')
-                            <a href="{{route('aula.course.participant.show', $course)}}">
-                        @elseif(Auth::user()->role == 'instructor')
-                            <a href="{{route('aula.course.instructor.show', $course)}}">
-                        @endif
+                            <a href="{{route('aula.course.show', $course)}}">
                                 Comenzar &nbsp;
                                 <i class="fa-solid fa-chevron-right"></i>
                             </a>

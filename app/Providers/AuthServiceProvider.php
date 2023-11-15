@@ -34,8 +34,8 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role, ['technical_support']);
         });
 
-        Gate::define('allowSupervisor', function ($user) {
-            return in_array($user->role, ['supervisor']);
+        Gate::define('allowSecurity', function ($user) {
+            return in_array($user->role, ['security_manager', 'security_manager_admin']);
         });
 
         Gate::define('allowInstructor', function ($user) {
@@ -46,8 +46,8 @@ class AuthServiceProvider extends ServiceProvider
             return !in_array($user->role, ['instructor']);
         });
 
-        Gate::define('denySupervisor', function ($user) {
-            return !in_array($user->role, ['supervisor']);
+        Gate::define('denySecurity', function ($user) {
+            return !in_array($user->role, ['security_manager', 'security_manager_admin']);
         });
     }
 }

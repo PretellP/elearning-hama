@@ -91,12 +91,12 @@ class Certification extends Model
     public function getIsEnableEvaluationAttribute()
     {
         $messages = [];
-        $now = getCurrentDate();
+        $today = getCurrentDate();
 
         if ($this->user->active != 'S') array_push($messages, "No está activo.");
         if($this->user->signature != 'S') array_push($messages, "No tiene firma.");
         if ($this->assist_user != 'S') array_push($messages, "No tiene asistencia.");
-        if ($this->event->date != $now) array_push($messages, "Fuera de fecha.");
+        if ($this->event->date != $today) array_push($messages, "Fuera de fecha.");
         if ($this->status == 'finished') array_push($messages, "Finalizó evaluación.");
 
         return count($messages) > 0 ? $messages : ["Habilitado"];
