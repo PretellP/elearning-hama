@@ -1218,6 +1218,8 @@ a:hover {
 
 .instructor-name-box .instructor-name {
     text-align: left;
+    max-height: 65px;
+    overflow-y: auto;
 }
 
 .instructor-name-box .instructor-name>div {

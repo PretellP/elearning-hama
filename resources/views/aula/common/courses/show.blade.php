@@ -94,7 +94,7 @@
 
             @can('allowSecurity')
             
-            <a href="" class="link-box-navigation-course">
+            <a href="{{ route('aula.course.events.security.index', $course) }}" class="link-box-navigation-course">
                 <div class="navigation-box evaluation card">
                     <div class="img-container">
                         <img src="{{asset('assets/aula/img/courses/events.png')}}" alt="">

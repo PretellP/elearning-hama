@@ -171,18 +171,18 @@ class EventService
     public function getInstructorEventsDatatable(User $user, Course $course)
     {
         $query = Event::whereHas('course', function ($q) use ($course) {
-                            $q->where('courses.id', $course->id);
-                        })
-                        ->where('user_id', $user->id)
-                        ->with([
-                            'room',
-                            'exam.course'
-                        ])
-                        ->select('events.*');
+            $q->where('courses.id', $course->id);
+        })
+            ->where('user_id', $user->id)
+            ->with([
+                'room',
+                'exam.course'
+            ])
+            ->select('events.*');
 
         $allEvents = DataTables::of($query)
             ->editColumn('description', function ($event) {
-                return '<a href="'. route('aula.course.events.instructor.show', $event) .'">' . $event->description . '</a>';
+                return '<a href="' . route('aula.course.events.instructor.show', $event) . '">' . $event->description . '</a>';
             })
             ->editColumn('type', function ($event) {
                 return config('parameters.event_types')[verifyEventType($event->type)];
@@ -191,7 +191,7 @@ class EventService
                 return getStatusButton($event->active);
             })
             ->editColumn('room.description', function ($event) {
-                return '<a href="'. route('aula.course.onlinelesson.show', $event) .'">' . $event->room->description . '</a>';
+                return '<a href="' . route('aula.course.onlinelesson.show', $event) . '">' . $event->room->description . '</a>';
             })
             ->rawColumns(['description', 'active', 'room.description'])
             ->make(true);
@@ -199,5 +199,95 @@ class EventService
         return $allEvents;
     }
 
+    // -------------- SECURITY -------------------
 
+    public function getSecurityEventsDatatable(User $user, Course $course)
+    {
+        $query = Event::whereHas('course', function ($q) use ($course) {
+            $q->where('courses.id', $course->id);
+        })
+            ->whereYear('date', '=', date('Y'))
+            ->where('active', 'S')
+            ->select('events.*');
+
+        $rawColumns = ['participants'];
+
+        $allEvents = DataTables::of($query)
+            ->addColumn('participants', function ($event) {
+                return '<a href="' . route('aula.course.events.security.show', $event) . '"> Lista </a>';
+            });
+
+
+        foreach ($user->miningUnits as $miningUnit) {
+
+            if (getMiningUnitSufix($miningUnit->description) == 'P') {
+
+                $allEvents->addColumn('signature_p', function ($event) use ($miningUnit) {
+                    $button = '<i class="fa-solid fa-circle-check text-success"></i>';
+
+                    if ($event->flg_security_por != 'S') {
+                        $button = '<a href=""> Pendiente </a>';
+                    }
+
+                    return $button;
+                });
+
+                array_push($rawColumns, 'signature_p');
+            }
+            if (getMiningUnitSufix($miningUnit->description) == 'A') {
+                $allEvents->addColumn('signature_a', function ($event) use ($miningUnit) {
+                    $button = '<i class="fa-solid fa-circle-check text-success"></i>';
+
+                    if ($event->flg_security != 'S') {
+                        $button = '<a href="' . route('aula.signatures.security.index', [$event, getMiningUnitSufix($miningUnit->description)]) . '"> 
+                                        Pendiente 
+                                    </a>';
+                    }
+
+                    return $button;
+                });
+
+                array_push($rawColumns, 'signature_a');
+            }
+        }
+
+        return $allEvents->rawColumns($rawColumns)
+            ->make(true);
+    }
+
+    public function storeSignatureSecurity(User $user, $imgBase64, Event $event, $miningUnitSufix, $storage)
+    {
+        $file_type = 'imagenes';
+        $category = 'firmas';
+        $belongsTo = 'firmas';
+
+        if ($event->flg_security != 'S') {
+
+            if (app(FileService::class)->storeSignature(
+                                        $user,
+                                        $imgBase64,
+                                        $file_type,
+                                        $category,
+                                        $belongsTo,
+                                        $storage,
+                                        $event
+                                        )) 
+            {
+                foreach ($user->miningUnits as $miningUnit) {
+
+                    if ($miningUnitSufix == 'A') {
+
+                        return $event->update([
+                            'flg_security' => 'S',
+                            'security_id' => $user->id,
+                        ]);
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        throw new Exception(config('parameters.exception_message'));
+    }
 }

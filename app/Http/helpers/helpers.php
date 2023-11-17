@@ -214,6 +214,7 @@ function getInstructorsBasedOnUserAndCourse($course)
 {
     $user = Auth::user();
     $role = $user->role;
+    $instructors = collect();
 
     if ($role == 'instructor') {
         $instructors = collect();
@@ -224,6 +225,11 @@ function getInstructorsBasedOnUserAndCourse($course)
                 return $event->user;
             });
         })->collapse()->unique();
+    } else if (in_array($role, ['security_manager', 'security_manager_admin'])) {
+        $instructors = $course->events->map(function ($event) {
+            return $event->user;
+        })
+        ->unique();
     }
 
     return $instructors;
@@ -239,7 +245,7 @@ function getNStudentsFromCourse($course)
                 return $event->certifications->pluck('user_id');
             });
         })->flatten(2)->unique()->count();
-    } elseif ($role == 'instructor') {
+    } elseif (in_array($role, ['instructor', 'security_manager', 'security_manager_admin'])) {
         $nstudents = $course->users_course_count;
     }
 

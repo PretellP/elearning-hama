@@ -661,23 +661,6 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
                         });
                     });
                 });
-
-                // ----------- SIGNATURES ----------------
-
-                Route::group([
-                        'middleware' => 'check.role:security_manager', 
-                        'prefix' => 'firma-digital/seguridad',
-                        'as' => 'signatures.security.'
-                    ], function () {
-
-                    //------- aula.signatures.security.* -----------
-                    Route::controller(AulaSignaturesController::class)->group(function () {
-                        
-                        Route::get('/{event}/{miningUnit}', 'indexSecurity')->name('index');
-                        Route::get('/{event}/{miningUnit}/crear-firma', 'createSecurity')->name('create');
-                        Route::post('/{event}/{miningUnit}/registrar-firma', 'storeSecurity')->name('store');
-                    });
-                });
             });
         });
     });

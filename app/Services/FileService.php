@@ -105,19 +105,19 @@ class FileService
         return false;
     }
 
-    public function storeSignature(User $user, $imgBase64, $file_type, $category, $belongsTo, $storage)
+    public function storeSignature(User $user, $imgBase64, $file_type, $category, $belongsTo, $storage, $event = null)
     {
         $directory = $this->makeDirectory($user, $file_type, $category, $belongsTo);
         $image = str_replace('data:image/png;base64,', '', $imgBase64);
         $image = str_replace(' ', '+', $image);
-        $image_name = $user->dni . '_' . time() . '.png';
+        $image_name = $this->getSignatureImgName($user, $event);
         $full_path = $directory . '/' . $image_name;
 
         if (Storage::disk($storage)->put($full_path, base64_decode($image))) {
 
             $files = $user->files()->where('category', 'firmas')->get();
 
-            if ($files->isNotEmpty()) {
+            if ($files->isNotEmpty() && !$event) {
                 foreach ($files as $file) {
                     $this->destroy($file, $storage);
                 }
@@ -133,4 +133,15 @@ class FileService
 
         return false;
     }   
+
+    private function getSignatureImgName(User $user, $event)
+    {
+        $img_name = $user->dni . '_' . time() . '.png';
+
+        if ($event) {
+            $img_name = $event->id . '_' . $user->dni . '.png';
+        }
+
+        return $img_name;
+    }
 }

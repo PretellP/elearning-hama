@@ -52,7 +52,6 @@ $(function () {
             ]
         });
 
-
         // ------------- UPDATE ASSIST ------------
 
         $('.main-content').on('change', 'input[type=checkbox].flg_assist_user_checkbox', function () {

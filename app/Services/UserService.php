@@ -228,7 +228,8 @@ class UserService
                                                     $file_type, 
                                                     $category, 
                                                     $belongsTo,
-                                                    $storage)) 
+                                                    $storage,
+                                                    null)) 
         {
             return true;
         }

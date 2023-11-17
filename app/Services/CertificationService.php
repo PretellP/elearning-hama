@@ -316,6 +316,36 @@ class CertificationService
         return $allCertifications;
     }
 
+    // ----------------- SECURITY -----------------------
+
+    public function getSecurityParticipantsDatatable(Event $event)
+    {
+        $query = $event->certifications()
+            ->where('evaluation_type', 'certification')
+            ->with([
+                'user.company',
+                'user.miningUnits'
+            ])
+            ->select('certifications.*');
+
+        $allCertifications = DataTables::of($query)
+            ->addColumn('user.miningUnits', function ($certification) {
+                $list = '<ul>';
+                
+                foreach ($certification->user->miningUnits as $miningUnit) {
+                    $list .= '<li>'. $miningUnit->description .'</li>';
+                }
+
+                return $list .= '</ul>';
+            })
+            ->rawColumns(['user.miningUnits'])
+            ->make(true);
+
+        return $allCertifications;
+    }
+
+    
+
 
     // ----------------- CERTIFICATION MODULE ------------------------
 

@@ -70,7 +70,7 @@ class CourseService
 
     public function getCoursesBasedOnRole($user)
     {
-        $courses = null;
+        $courses = collect();
 
         if ($user->role == 'instructor') {
             $courses = Course::whereHas('exams.events', function ($query) use ($user) {
@@ -133,6 +133,31 @@ class CourseService
                 ->where('active', 'S')
                 ->get()
                 ->sortByDesc('events_max_date');
+        } else if (in_array($user->role, ['security_manager', 'security_manager_admin'])) {
+            $courses = Course::whereHas('type', function ($q) {
+                        $q->whereRaw("(LOWER(course_types.name) LIKE '%inducci%')");
+                    })
+                    ->with([
+                        'file' => fn ($q2) =>
+                        $q2->where('file_type', 'imagenes')
+                            ->where('category', 'cursos')
+                            ->select('id', 'file_url', 'file_type', 'category', 'fileable_id', 'fileable_type'),
+                        'events' => fn ($q5) => 
+                        $q5->whereYear('events.date', '=', date('Y'))
+                            ->with('user:id,name,paternal')
+                    ])
+                    ->withCount(['courseCertifications as users_course_count' => function($q3) {
+                        $q3->whereRaw('year(events.date) = "'. date('Y') .'"')
+                            ->select(DB::raw('count(distinct(certifications.user_id))'));
+                    }])
+                    ->whereHas('events', function ($q4) {
+                        $q4->where('events.active', 'S')
+                            ->whereYear('events.date', '=', date('Y'));
+                    })
+                    ->withMax('events', 'date')
+                    ->where('active', 'S')
+                    ->get()
+                    ->sortByDesc('events_max_date');
         }
 
         return $courses;
@@ -193,6 +218,7 @@ class CourseService
 
         if ($courseUpdated) {
             if ($request->hasFile('image')) {
+
                 app(FileService::class)->destroy($course->file, $storage);
 
                 $file_type = 'imagenes';
