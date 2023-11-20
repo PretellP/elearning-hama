@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Pdf;
 use App\Http\Controllers\Controller;
 use App\Models\{Certification, File, MiningUnit};
 use App\Services\Pdf\{PdfCertificationService};
-
+use Storage;
 
 class PdfCertificationController extends Controller
 {
@@ -78,6 +78,25 @@ class PdfCertificationController extends Controller
         ]);
 
         return $this->pdfCertificationService->exportWebCertificationPdf($certification);
+    }
+
+    public function anexoPdf(Certification $certification, MiningUnit $miningUnit)
+    {
+        $storage = env('FILESYSTEM_DRIVER');
+
+        $certification->load([
+            'course',
+            'user',
+            'company',
+            'event' => fn($q) => 
+                $q->with([
+                    'user.file' => fn($q2) => $q2->where('category', 'firmas'),
+                    'security',
+                    'securityPor'
+                ]),
+        ]);
+
+        return $this->pdfCertificationService->exportAnexoPdf($certification, $miningUnit, $storage);
     }
 
     public function downloadFile(File $file)

@@ -354,7 +354,8 @@ class CertificationService
         $query = Certification::with([
             'user',
             'company',
-            'event.exam.course.type'
+            'event.exam.course.type',
+            'miningUnits'
         ])
             ->where('status', 'finished')
             ->where('evaluation_type', 'certification')
@@ -414,9 +415,11 @@ class CertificationService
             })
             ->addColumn('certification', function ($certification) {
 
-                if ($certification->score >= $certification->event->min_score) {
+                if ($certification->its_approved) {
 
                     $type = $certification->event->exam->course->type;
+
+                    $certification_icon = '<a href="' . route('pdf.export.certification', $certification) . '" target="_BLANK">';
 
                     if ($type) {
 
@@ -424,11 +427,7 @@ class CertificationService
                             $certification_icon = '<a href="' . route('pdf.export.ext_certification', $certification) . '" target="_BLANK">';
                         } else if (Str::is('*WEBINAR*', strtoupper($type->name))) {
                             $certification_icon = '<a href="' . route('pdf.export.web_certification', $certification) . '" target="_BLANK">';
-                        } else {
-                            $certification_icon = '<a href="' . route('pdf.export.certification', $certification) . '" target="_BLANK">';
-                        }
-                    } else {
-                        $certification_icon = '<a href="' . route('pdf.export.certification', $certification) . '" target="_BLANK">';
+                        } 
                     }
 
                     $certification_icon .= '<img src="' . asset('assets/common/img/certification-icon.svg') . '"
@@ -441,7 +440,72 @@ class CertificationService
 
                 return $certification_icon;
             })
-            ->rawColumns(['exam', 'event.description', 'certification'])
+            ->addColumn('documents', function ($certification) {
+
+                $type = $certification->event->exam->course->type;
+
+                $btn = '-';
+             
+                if ($certification->its_approved && 
+                    $type && 
+                    Str::is('*INDUCCI*', strtoupper($type->name)) &&
+                    $certification->company->active == 'S'
+                    ) {
+
+                    $btn = '<div class="dropdown">
+                                <a class="btn btn-primary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                                    Ver documentos
+                                </a>
+                            
+                                <div class="dropdown-menu">';
+
+                    if ($certification->miningUnits->isNotEmpty()) {
+
+                        foreach ($certification->miningUnits as $i => $miningUnit) {
+
+                            $sufix = getMiningUnitSufix($miningUnit->description);
+
+                            if (in_array($sufix, ['A', 'P', 'S', 'C'])) {
+
+                                $btn .= '<a class="dropdown-item white-space-normal d-flex align-items-center" 
+                                        href="'. route('admin.pdf.certification.anexo', [$certification, $miningUnit]) .'" target="_BLANK">
+                                            <i class="fa-solid fa-file-lines me-3"></i>
+                                            <span>
+                                                Anexo 4 '. $miningUnit->description .'
+                                            </span>
+                                        </a>';
+                            }
+                            else if ($i == 0) {
+                                $btn .= '<a class="dropdown-item not-user-allowed disabled" href="#">
+                                                <i class="fa-solid fa-file-lines me-2"></i>
+                                                No se encontraron anexos
+                                            </a>';
+                            }
+                        }
+
+                        $btn .= '<div class="dropdown-divider"></div>';
+
+                        foreach ($certification->miningUnits as $i => $miningUnit) {
+
+                            $btn .= '<a class="dropdown-item white-space-normal d-flex align-items-center" href="'. route('pdf.export.commitment', [$certification, $miningUnit]) .'" target="_BLANK">
+                                        <i class="fa-solid fa-file-contract me-3"></i>
+                                        <span>
+                                            Carta Compromiso '. $miningUnit->description .'
+                                        </span>
+                                    </a>';
+                        }
+                    }
+                    else {
+                        $btn .= '<a class="dropdown-item not-user-allowed disabled" href="#">No hay documentos</a>';
+                    }
+
+                    $btn .= '</div>
+                            </div>';
+                }
+
+                return $btn;
+            })
+            ->rawColumns(['exam', 'event.description', 'certification', 'documents'])
             ->make(true);
 
         return $allCertifications;

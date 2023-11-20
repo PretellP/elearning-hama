@@ -665,6 +665,9 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
         });
     });
 
+
+    
+
     // ---------- ACTUALIZAR ASISTENCIA -----------
 
     Route::group(['middleware' => 'check.role:admin,super_admin,technical_support,instructor'], function () {

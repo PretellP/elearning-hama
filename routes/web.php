@@ -498,12 +498,19 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
 
             // ----------------- PDFS ------------------
 
-            // ------ certifications ------------
+            // ------ Certifications ------------
 
-            Route::get('/generar-pdf-evaluación-de-participante/{certification}', [PdfCertificationController::class, 'examPdf'])->name('pdf.certification.exam');
+            //-------  pdf.certification.* ----------
+            Route::group(['as' => 'pdf.certification.'], function () {
+
+                Route::controller(PdfCertificationController::class)->group(function () {
+
+                    Route::get('/generar-pdf-evaluación-de-participante/{certification}', 'examPdf')->name('exam');
+                    Route::get('/generar-pdf-anexo/{certification}/unidad-minera/{miningUnit}', 'anexoPdf')->name('anexo');
+                });
+            });
         });
     });
-
 
     // -------  RUTAS DE LA INTERFAZ AULA ---------------
 
@@ -665,7 +672,6 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
                 // ----------- SIGNATURES ----------------
 
                 Route::group([
-                        'middleware' => 'check.role:security_manager', 
                         'prefix' => 'firma-digital/seguridad',
                         'as' => 'signatures.security.'
                     ], function () {

@@ -75,7 +75,7 @@
 @endsection
 
 @section('modals')
-@include('aula.security.signatures.partials.modals._authorization_at')
+@include('aula.security.signatures.partials.modals._authorization')
 @include('aula.common.signatures.partials.modals._tutorial_ex')
 @endsection
 

@@ -296,7 +296,15 @@ class AdminCertificationsController extends Controller
         ]);
     }
 
+
+
+
+
+
+
+
     // ------------------- CERTIFICATION MODULE ------------------------
+
 
     public function index(Request $request) 
     {

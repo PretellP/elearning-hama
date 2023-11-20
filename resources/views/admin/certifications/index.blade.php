@@ -85,6 +85,7 @@
                         <th>Nota</th>
                         <th>Examen</th>
                         <th>Certificado</th>
+                        <th>Documentos</th>
                     </tr>
                 </thead>
             </table>

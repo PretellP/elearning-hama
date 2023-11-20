@@ -10197,8 +10197,9 @@ $(function () {
                 { data: 'event.description', name: 'event.description' },
                 { data: 'event.date', name: 'event.date' },
                 { data: 'score', name: 'score' },
-                { data: 'exam', name: 'exam', orderable: false, searchable: false, className: 'text-center' },
-                { data: 'certification', name: 'certification', orderable: false, searchable: false, className: 'text-center' },
+                { data: 'exam', name: 'exam', orderable: false, searchable: false },
+                { data: 'certification', name: 'certification', orderable: false, searchable: false },
+                { data: 'documents', name: 'documents', orderable: false, searchable: false },
             ],
             order: [
                 [0, 'desc']

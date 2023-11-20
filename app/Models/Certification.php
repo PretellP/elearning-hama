@@ -88,6 +88,11 @@ class Certification extends Model
         ]);
     }
 
+    public function getItsApprovedAttribute()
+    {
+        return $this->score >= $this->event->min_score;
+    }
+
     public function getIsEnableEvaluationAttribute()
     {
         $messages = [];

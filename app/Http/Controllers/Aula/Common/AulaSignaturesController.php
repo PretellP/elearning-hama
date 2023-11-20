@@ -29,7 +29,7 @@ class AulaSignaturesController extends Controller
     {
         $event->load('course');
 
-        return view('aula.security.signatures.index_at', compact(
+        return view('aula.security.signatures.index', compact(
             'event',
             'miningUnit'
         ));
@@ -42,7 +42,7 @@ class AulaSignaturesController extends Controller
 
     public function createSecurity(Event $event, $miningUnit)
     {
-        return view('aula.security.signatures.create_at', compact(
+        return view('aula.security.signatures.create', compact(
             'event',
             'miningUnit'
         ));
@@ -85,7 +85,7 @@ class AulaSignaturesController extends Controller
         }
 
         $message = getMessageFromSuccess($success, 'stored');
-        $route = $success ? route('aula.course.events.security.index', ['course' => $event->course, $miningUnit]) : null;
+        $route = $success ? route('aula.course.events.security.index', ['course' => $event->course]) : null;
 
         return response()->json([
             "success" => $success,

@@ -226,7 +226,9 @@ class EventService
                     $button = '<i class="fa-solid fa-circle-check text-success"></i>';
 
                     if ($event->flg_security_por != 'S') {
-                        $button = '<a href=""> Pendiente </a>';
+                        $button = '<a href="' . route('aula.signatures.security.index', [$event, getMiningUnitSufix($miningUnit->description)]) . '"> 
+                                        Pendiente 
+                                    </a>';
                     }
 
                     return $button;
@@ -261,18 +263,20 @@ class EventService
         $category = 'firmas';
         $belongsTo = 'firmas';
 
-        if ($event->flg_security != 'S') {
+        if (
+            ($miningUnitSufix == 'A' && $event->flg_security != 'S') ||
+            ($miningUnitSufix == 'P' && $event->flg_security_por != 'S')
+        ) {
 
             if (app(FileService::class)->storeSignature(
-                                        $user,
-                                        $imgBase64,
-                                        $file_type,
-                                        $category,
-                                        $belongsTo,
-                                        $storage,
-                                        $event
-                                        )) 
-            {
+                $user,
+                $imgBase64,
+                $file_type,
+                $category,
+                $belongsTo,
+                $storage,
+                $event
+            )) {
                 foreach ($user->miningUnits as $miningUnit) {
 
                     if ($miningUnitSufix == 'A') {
@@ -280,6 +284,13 @@ class EventService
                         return $event->update([
                             'flg_security' => 'S',
                             'security_id' => $user->id,
+                        ]);
+                    }
+                    if ($miningUnitSufix == 'P') {
+
+                        return $event->update([
+                            'flg_security_por' => 'S',
+                            'security_por_id' => $user->id,
                         ]);
                     }
                 }

@@ -2,10 +2,11 @@
 
 namespace App\Services\Pdf;
 
-use App\Models\{Certification, File};
+use App\Models\{Certification, File, MiningUnit};
 use App\Services\{FileService};
 use Barryvdh\DomPDF\Facade\Pdf;
 use Intervention\Image\Facades\Image;
+use Storage;
 
 class PdfCertificationService
 {
@@ -89,6 +90,28 @@ class PdfCertificationService
 
             return $pdf->stream($pdf_name);
             // return $pdf->download($pdf_name);
+        }
+
+        abort(403, 'Acceso no autorizado');
+    }
+
+    public function exportAnexoPdf(Certification $certification, MiningUnit $miningUnit, $storage)
+    {
+        if ($this->isEnableExport($certification)) {
+
+            $url = Storage::disk($storage)->url('imagenes/firmas/');
+
+            $pdf = PDF::loadView('pdf.anexo', compact(
+                'certification',
+                'miningUnit',
+                'url'
+            ))->setPaper('a4', 'portrait');
+
+            $sufix = getMiningUnitSufix($miningUnit->description);
+
+            $pdf_name = 'anexos_' . $certification->user->dni . '_' . $certification->event->id . '_' . $sufix . '.pdf';
+
+            return $pdf->stream($pdf_name);
         }
 
         abort(403, 'Acceso no autorizado');

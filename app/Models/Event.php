@@ -74,6 +74,16 @@ class Event extends Model
         return $this->belongsTo(User::class, 'responsable_id', 'id');
     }
 
+    public function security()
+    {
+        return $this->belongsTo(User::class,'security_id');
+    }
+
+      public function securityPor()
+    {
+        return $this->belongsTo(User::class,'security_por_id');
+    }  
+
     public function room()
     {
         return $this->belongsTo(Room::class, 'room_id', 'id');
