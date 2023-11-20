@@ -10,3 +10,5 @@
 <script src="{{ asset('assets/certificates/js/bootstrap-select.min.js') }}"></script>
 <script src="{{ asset('assets/certificates/js/custom.js') }}"></script>
 
+@include('certificates.common.partials.sweet')
+

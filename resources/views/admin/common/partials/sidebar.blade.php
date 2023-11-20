@@ -137,6 +137,13 @@
                 </a>
             </li>
 
+            <li class="{{setActive('admin.filesManagement.*')}}" >
+                <a href="{{ route('admin.filesManagement.index') }}" class="nav-link">
+                    <i class="fa-regular fa-folder-open"></i>
+                    <span>Gestión de Archivos</span>
+                </a>
+            </li>
+
 
             <li class="logout mt-5">
                 <a href="#" class="nav-link" onclick="event.preventDefault(); 

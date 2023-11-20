@@ -23,7 +23,8 @@ use App\Http\Controllers\Admin\{
     AdminSurveyGroupController,
     AdminSurveyOptionController,
     AdminSurveyStatementController,
-    CourseTypeController
+    CourseTypeController,
+    FileController
 };
 use App\Http\Controllers\Aula\Common\{
     AulaHomeController,
@@ -102,7 +103,7 @@ Auth::routes(['register' => false]);
 
 
 // --------------- CERTIFICATION -----------------
-
+// ------ certifications.*
 Route::group(['prefix' => 'certificados', 'as' => 'certifications.'], function () {
 
     Route::controller(CertificateController::class)->group(function () {
@@ -256,8 +257,8 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
 
                     Route::controller(FolderController::class)->group(function () {
 
-                        Route::get('/ver-carpeta/{folder}', 'show')->name('courses.folder.view');
-                        Route::post('/ccrear-carpeta/{course}', 'store')->name('folder.create');
+                        Route::get('/ver-carpeta/{folder}', 'show')->name('folder.view');
+                        Route::post('/crear-carpeta/{course}', 'store')->name('folder.create');
                         Route::post('/subfolder/{folder}', 'storeSubfolder')->name('subfolder.create');
                         Route::patch('/{folder}/actualizar', 'update')->name('folder.update');
                         Route::delete('/{folder}/eliminar', 'destroy')->name('folder.destroy');
@@ -484,6 +485,20 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
                     });
                 });
             });
+
+            // -------------- FILES MANAGEMENT -------------
+
+            // ----------- admin.filesManagement.* -----------
+            Route::group(['prefix' => 'archivos', 'as' => 'filesManagement.'], function () {
+
+                Route::controller(FileController::class)->group(function () {
+
+                    Route::get('/', 'index')->name('index');
+                    Route::get('/descargar-archivo/{file}', 'downloadFile')->name('download');
+                    Route::post('/almacenar-archivo', 'storeFile')->name('store');
+                    Route::delete('/eiminar-archivo/{file}', 'destroyFile')->name('destroy');
+                });
+            });
         });
 
         // ----------- CERTIFICATIONS MODULE ------------
@@ -494,12 +509,9 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
 
                 Route::get('/', 'index')->name('certifications.index');
             });
-
-
             // ----------------- PDFS ------------------
 
             // ------ Certifications ------------
-
             //-------  pdf.certification.* ----------
             Route::group(['as' => 'pdf.certification.'], function () {
 

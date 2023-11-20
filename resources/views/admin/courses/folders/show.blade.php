@@ -36,7 +36,7 @@
                             <h6>Editar nombre</h6>
                         </div>
                         <div>
-                            <form action="{{route('admin.folder.update', $folder)}}" method="POST">
+                            <form action="{{route('admin.courses.folder.update', $folder)}}" method="POST">
                                 @method('PATCH')
                                 @csrf
                                 <div class="form-group row">
@@ -73,7 +73,7 @@
                             </div>
                             <div>
                                 
-                                <form action="{{route('admin.subfolder.create', $folder)}}" method="POST">
+                                <form action="{{route('admin.courses.subfolder.create', $folder)}}" method="POST">
                                     @csrf
                                     
                                     <div class="form-group row">
@@ -136,7 +136,7 @@
                     </div>
                     <div>
                         
-                        <form action="{{route('admin.folders.file.store', $folder)}}" method="POST" enctype="multipart/form-data">
+                        <form action="{{route('admin.courses.folders.file.store', $folder)}}" method="POST" enctype="multipart/form-data">
                             @csrf
 
                             <div class="form-group row">
@@ -163,7 +163,7 @@
                     <div class="table-border-style">
                         
                         <div class="table-responsive">
-                            <table id="files-folder-course-table" class="table table-hover" data-url='{{route('admin.files.index', $folder)}}'>
+                            <table id="files-folder-course-table" class="table table-hover" data-url='{{route('admin.courses.files.index', $folder)}}'>
                                 <thead>
                                     <tr>
                                         <th>N°</th>
@@ -187,7 +187,7 @@
             </div>
 
             <div class="folder-inner-container">
-                <form id="delete-folder-form" method="POST" action="{{route('admin.folder.destroy', $folder)}}">
+                <form id="delete-folder-form" method="POST" action="{{route('admin.courses.folder.destroy', $folder)}}">
                     @csrf @method('DELETE')
                     <button id="btn-destroy-folder" class="btn btn-danger" type="submit">
                         <i class="fa-solid fa-triangle-exclamation"></i> &nbsp; Eliminar Carpeta

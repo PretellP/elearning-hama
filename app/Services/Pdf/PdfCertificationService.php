@@ -121,9 +121,4 @@ class PdfCertificationService
     {
         return $certification->score >= $certification->event->min_score;
     }
-
-    public function downloadFile(File $file, $storage)
-    {
-        return app(FileService::class)->download($file, $storage);
-    }
 }

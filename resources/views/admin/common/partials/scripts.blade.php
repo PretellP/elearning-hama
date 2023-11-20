@@ -43,12 +43,12 @@
 <script src="{{asset('assets/common/modules/dropzonejs/min/dropzone.min.js')}}"></script>
 
 
-@yield('extra-script')
-
 <!-- Template JS File -->
 <script src="{{asset('assets/common/js/scripts.js')}}"></script>
 
 <script src="{{asset('assets/admin/js/custom.js')}}" ></script>
+
+@yield('extra-script')
 
 @include('admin.common.partials.sweet')
 

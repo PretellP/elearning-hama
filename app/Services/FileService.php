@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\File;
-use App\Models\User;
+use App\Models\{Certification, Event, File, User};
+use Datatables;
 use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Storage;
 
 class FileService
@@ -27,7 +29,7 @@ class FileService
         throw new Exception(config('parameters.exception_message'));
     }
 
-    public function destroy($file = null, $storage)
+    public function destroy(?File $file, $storage)
     {
         if ($file) {
             if (Storage::disk($storage)->exists($file->file_path)) {
@@ -96,6 +98,11 @@ class FileService
         return $stored_file;
     }
 
+    public function validateDownload(File $file, $storage)
+    {
+        return Storage::disk($storage)->exists($file->file_path);
+    }
+
     public function download($file, $storage)
     {
         if (Storage::disk($storage)->exists($file->file_path)) {
@@ -143,5 +150,106 @@ class FileService
         }
 
         return $img_name;
+    }
+
+
+
+    // ----------- FILES MANAGEMENT MODULE -------------------
+
+    public function getDatatable(Request $request)
+    {
+        $query = File::where('file_type', 'archivos')
+                    ->whereIn('category', ['certificados', 'asistencias', 'anexos'])
+                    ->select('files.*');
+
+
+        if ($request->filled('from_date') && $request->filled('end_date')) {
+            $query = $query->whereBetween('created_at', [$request->from_date, $request->end_date]);
+        }
+                    
+        $allFiles = Datatables::of($query)
+            ->editColumn('file_path', function ($file){
+                return $file->name;
+            })
+            ->editColumn('created_at', function ($file) {
+                return $file->created_at;
+            })
+            ->addColumn('action', function ($file) {
+                $btn = '<a data-id="' .
+                    $file->id . '" href="'. route('admin.filesManagement.download', $file) .'"
+                    data-original-title="edit" class="me-3 edit btn btn-primary btn-sm
+                    downloadFile"><i class="fa-solid fa-download"></i></a>';
+
+                $btn .= '<a href="javascript:void(0)" data-id="' .
+                    $file->id . '" data-original-title="delete"
+                    data-url="'. route('admin.filesManagement.destroy', $file) .'" class="ms-3 edit btn btn-danger btn-sm
+                    deleteFile"><i class="fa-solid fa-trash-can"></i></a>';
+                
+                return $btn;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+
+        return $allFiles;
+    }
+
+    public function storeFile($files, $storage)
+    {
+        $rejected = [];
+        $success = false;
+        $found_errors = false;
+
+        foreach ($files as $file) {
+            $original_name = $file->getClientOriginalName();
+            $original_filename = pathinfo($original_name, PATHINFO_FILENAME);
+
+            try {
+                $array_data = Str::of($original_filename)->explode('_');
+                $category = $array_data[0];
+
+                if ($category == 'asistencias') // formato: asistencias_codevento.pdf
+                {
+                    $model = Event::where('id', $array_data[1])->firstOrFail();
+                    $belongsTo = 'asistencias';
+                }
+                elseif ($category == 'anexos') // formato: anexos_dni_codevento.pdf
+                {
+                    $dni = $array_data[1];
+                    $event_id = $array_data[2];
+
+                    $model = Certification::where('event_id', $event_id)
+                                            ->whereHas('user', function ($q) use ($dni) {
+                                                $q->where('dni', $dni);
+                                            })->firstOrFail();
+                    $belongsTo = 'anexos';
+                }
+
+                if (isset($model)) {
+                    $directory = $this->makeDirectory($model, 'archivos', $category, $belongsTo);
+
+                    if (Storage::disk($storage)->exists($directory . '/' . $original_name)) {
+                        Storage::disk($storage)->delete($directory . '/' . $original_name);
+                        Storage::disk($storage)->putFileAs($directory, $file, $original_name);
+                    } else {
+                        list($file_path, $file_url) = $this->storeInStorage($directory, $original_name, $file, $storage);
+                        $stored_file = $this->getStoredFile($file_path, $file_url, 'archivos',  $category);
+
+                        $model->files()->save($stored_file);
+                    }
+
+                    $success = true;
+                }
+                else {
+                    array_push($rejected, $original_name);
+                    $found_errors = true;
+                }
+
+            } catch (Exception $e) {
+                array_push($rejected, $original_name);
+                $found_errors = true;
+            }
+        }
+
+        return [$success, $rejected, $found_errors];
     }
 }

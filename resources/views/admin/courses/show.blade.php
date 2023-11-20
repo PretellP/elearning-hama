@@ -92,7 +92,7 @@
                                         <h6>Crear Carpeta </h6>
                                     </div>
                                     <div class="card-block">
-                                        <form action="{{route('admin.folder.create', $course)}}" method="POST">
+                                        <form action="{{route('admin.courses.folder.create', $course)}}" method="POST">
                                             @csrf
                                             <div class="form-group row">
                                                 <div class="col-sm-12">

@@ -132,7 +132,7 @@ class FolderService
     {
         $allFiles = DataTables::of($folder->files())
             ->addColumn('filename', function ($file) {
-                return '<a href="' . route('admin.folders.file.download', $file) . '">' .
+                return '<a href="' . route('admin.courses.folders.file.download', $file) . '">' .
                     basename($file->file_path)
                     . '</a> ';
             })
@@ -155,7 +155,7 @@ class FolderService
 
                 $btn = '<a href="javascript:void(0)" data-id="' .
                     $file->id . '" data-original-title="delete"
-                                        data-url="' . route('admin.folders.file.destroy', $file) . '" class="ms-3 edit btn btn-danger btn-sm
+                                        data-url="' . route('admin.courses.folders.file.destroy', $file) . '" class="ms-3 edit btn btn-danger btn-sm
                                         deleteFile"><i class="fa-solid fa-trash-can"></i></a>';
 
                 return $btn;

@@ -38,6 +38,11 @@ class Event extends Model
         'owner_companies_id',
     ];
 
+    public function files()
+    {
+        return $this->morphMany(File::class, 'fileable');
+    }
+
     public function exam()
     {
         return $this->belongsTo(Exam::class, 'exam_id', 'id');

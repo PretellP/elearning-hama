@@ -10258,7 +10258,16 @@ $(function () {
         max: jQuery.validator.format('Por favor, ingrese un valor menor o igual a {0}'),
         min: jQuery.validator.format('Por favor, ingrese un valor mayor o igual a {0}'),
         step: jQuery.validator.format("Ingrese un número múltiplo de {0}"),
-        maxlength: jQuery.validator.format("Ingrese menos de {0} caracteres.")
+        maxlength: jQuery.validator.format("Ingrese menos de {0} caracteres."),
+        accept: 'Por favor, selecciona un archivo con extensión válida.'
     });
+
+    
+    jQuery.validator.addMethod("extension", 
+        function (value, element, param) {
+            param = typeof param === "string" ? param.replace(/,/g, '|') : "png|jpe?g|gif";
+            return this.optional(element) || value.match(new RegExp(".(" + param + ")$", "i"));
+    });
+
 })
 

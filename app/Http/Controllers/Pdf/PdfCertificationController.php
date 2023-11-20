@@ -4,16 +4,19 @@ namespace App\Http\Controllers\Pdf;
 
 use App\Http\Controllers\Controller;
 use App\Models\{Certification, File, MiningUnit};
+use App\Services\FileService;
 use App\Services\Pdf\{PdfCertificationService};
 use Storage;
 
 class PdfCertificationController extends Controller
 {
     private $pdfCertificationService;
+    private $fileService;
 
-    public function __construct(PdfCertificationService $service)
+    public function __construct(PdfCertificationService $pdfCertificationService, FileService $fileService)
     {
-        $this->pdfCertificationService = $service;
+        $this->pdfCertificationService = $pdfCertificationService;
+        $this->fileService = $fileService;
     }   
 
     public function examPdf(Certification $certification)
@@ -103,8 +106,10 @@ class PdfCertificationController extends Controller
     {
         $storage = env('FILESYSTEM_DRIVER');
 
-        if (!$this->pdfCertificationService->downloadFile($file, $storage)) {
-            return redirect()->route('certifications.index');
+        if ($this->fileService->validateDownload($file, $storage)) {
+            return $this->fileService->download($file, $storage);
         }
+
+        return redirect()->route('certifications.index')->with('flash_message', 'fileNotFound');
     }
 }
