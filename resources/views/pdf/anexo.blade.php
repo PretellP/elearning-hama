@@ -324,7 +324,7 @@
                 };
             @endphp
 
-            @if ($security_user)
+            @if ($security_user ?? false)
 
             <div class="nexa-vb">
                 <img src="{{ $vb_nexa }}" class="signature-manager-img" alt="">
@@ -334,7 +334,7 @@
     
             <div class="signature-manager">
     
-                @if ($security_user)
+                @if ($security_user ?? false)
     
                 <div class="">
                     <img src="{{ $url }}{{ $certification->event->id }}_{{ $security_user->dni }}.png" class="signature-manager-img" align="middle" alt="">
