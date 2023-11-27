@@ -468,9 +468,14 @@ function getSelectedOption(CourseSection $section, $order)
     return $section->section_order == $order ? 'selected' : '';
 }
 
-function setSectionActive(CourseSection $section, $sectionActive)
+function getGlobalSelectedOption($model, $order)
 {
-    return $section->id == $sectionActive ? 'active' : '';
+    return $model->order == $order ? 'selected' : '';
+}
+
+function setSectionActive($model, $active)
+{
+    return $model->id == $active ? 'active' : '';
 }
 
 function getActiveSection($active)

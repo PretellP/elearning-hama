@@ -119,7 +119,6 @@ class AdminAnnouncementsController extends Controller
 
         if ($success) {
             $banners = $this->annoucementService->getBanners();
-
             $html = view('admin.announcements.partials.boxes._banners_list', compact('banners'))->render();
         }
 

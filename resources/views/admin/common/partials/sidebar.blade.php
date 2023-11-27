@@ -71,6 +71,13 @@
                 </a>
             </li>
 
+            <li class="{{setActive('admin.specCourses.*')}}">
+                <a class="nav-link" href="{{route('admin.specCourses.index')}}">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>Cursos de Espec.</span>
+                </a>
+            </li>
+
             <li class="{{setActive('admin.freeCourses.*')}}">
                 <a href="{{route('admin.freeCourses.index')}}" class="nav-link">
                     <i class="fa-solid fa-book-open"></i>

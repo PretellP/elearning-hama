@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\{Course, Event, User};
+use App\Models\{Course, CourseModule, Event, SpecCourse, User};
 use Exception;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -16,7 +16,8 @@ class EventService
             'user',
             'responsable',
         ])
-            ->withCount(['certifications', 'userSurveys']);
+            ->withCount(['certifications', 'userSurveys'])
+            ->doesntHave('courseModule');
 
         if ($request->filled('from_date') && $request->filled('end_date')) {
             $query = $query->whereBetween('date', [$request->from_date, $request->end_date]);
@@ -111,9 +112,7 @@ class EventService
             $data['questions_qty'] = $event->questions_qty;
         }
 
-        $isUpdated = $event->update($data);
-
-        if ($isUpdated) {
+        if ($event->update($data)) {
             return true;
         }
 
@@ -297,6 +296,78 @@ class EventService
 
                 return false;
             }
+        }
+
+        throw new Exception(config('parameters.exception_message'));
+    }
+
+
+
+
+
+    // --------------- SPEC COURSES -----------------
+
+    public function getSpecCourseDataTable(int $module_id)
+    {
+        $query = Event::with([
+            'exam.course',
+            'user',
+            'responsable',
+        ])
+            ->withCount(['certifications', 'userSurveys'])
+            ->has('courseModule')
+            ->where('course_module_id', $module_id);
+
+        $allEvents = DataTables::of($query)
+            ->editColumn('description', function ($event) {
+                return '<a href="'. route('admin.specCourses.events.show', $event) .'">' . $event->description . '</a>';
+            })
+            ->editColumn('type', function ($event) {
+                return config('parameters.event_types')[verifyEventType($event->type)];
+            })
+            ->editColumn('user.name', function ($event) {
+                return $event->user->full_name;
+            })
+            ->editColumn('responsable.name', function ($event) {
+                return $event->responsable->full_name;
+            })
+            ->editColumn('flg_asist', function ($event) {
+                return $event->flg_asist == 'S' ? 'Habilitado' : 'Deshabilitado';
+            })
+            ->editColumn('active', function ($event) {
+                return getStatusButton($event->active);
+            })
+            ->addColumn('action', function ($event) {
+                $btn = '<button data-toggle="modal" data-id="' .
+                    $event->id . '" data-url="'. route('admin.specCourses.events.update', $event) .'" 
+                                    data-send="' . route('admin.specCourses.events.edit', $event) . '"
+                                    data-original-title="edit" class="me-3 edit btn btn-warning btn-sm
+                                    editSpecEvent-btn"><i class="fa-solid fa-pen-to-square"></i></button>';
+                if (
+                    $event->certifications_count == 0 &&
+                    $event->user_surveys_count == 0
+                ) {
+                    $btn .= '<a href="javascript:void(0)" data-id="' .
+                        $event->id . '" data-original-title="delete"
+                                        data-place="index"
+                                        data-url="'. route('admin.specCourses.events.destroy', $event) .'" class="ms-3 edit btn btn-danger btn-sm
+                                        deleteSpecEvent-btn"><i class="fa-solid fa-trash-can"></i></a>';
+                }
+
+                return $btn;
+            })
+            ->rawColumns(['description', 'active', 'action'])
+            ->make(true);
+
+        return $allEvents;
+    }
+
+    public function specCourseStore($request, CourseModule $module)
+    {
+        $data = normalizeInputStatus($request->validated());
+
+        if ($event = $module->events()->create($data)) {
+            return $event;
         }
 
         throw new Exception(config('parameters.exception_message'));

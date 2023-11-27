@@ -167,8 +167,8 @@ class CourseService
     {
         $data = normalizeInputStatus($request->validated());
 
-        $time_start = Carbon::parse(Carbon::createFromFormat('g:i A', $data['time_start']))->format('h:i:s');
-        $time_end = Carbon::parse(Carbon::createFromFormat('g:i A', $data['time_end']))->format('h:i:s');
+        $time_start = Carbon::parse(Carbon::createFromFormat('g:i A', $data['time_start']))->format('H:i:s');
+        $time_end = Carbon::parse(Carbon::createFromFormat('g:i A', $data['time_end']))->format('H:i:s');
 
         $data['time_start'] = $time_start;
         $data['time_end'] = $time_end;

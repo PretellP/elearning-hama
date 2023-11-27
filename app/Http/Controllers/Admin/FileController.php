@@ -41,7 +41,6 @@ class FileController extends Controller
 
         $message = getMessageFromSuccess($success, 'stored');
 
-
         return response()->json([
             "success" => $success,
             "message" => $message,

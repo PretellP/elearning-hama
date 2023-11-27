@@ -70,7 +70,6 @@
 
             </div>
 
-
             <table id="certifications-index-table" class="table table-hover"
                 data-url="{{ route('admin.certifications.index') }}">
                 <thead>

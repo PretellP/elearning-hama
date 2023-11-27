@@ -51,7 +51,7 @@ class SectionChapterService
 
         return $allChapters;
     }
-
+    
     public function store($request, CourseSection $section, $storage)
     {
         $lastOrder = $section->getChapterLastOrder();

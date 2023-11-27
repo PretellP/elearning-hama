@@ -102,9 +102,9 @@ class AdminCourseCategoriesController extends Controller
         $category->loadImage();
         $storage = env('FILESYSTEM_DRIVER');
 
-        try{
+        try {
             $this->courseCategoryService->destroy($storage, $category);
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             abort(500, $e->getMessage());
         }
 

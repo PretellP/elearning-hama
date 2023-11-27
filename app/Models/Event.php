@@ -36,6 +36,7 @@ class Event extends Model
         'security_por_id',
         'flg_security_por',
         'owner_companies_id',
+        'course_module_id'
     ];
 
     public function files()
@@ -109,6 +110,11 @@ class Event extends Model
         return $this->belongsTo(OwnerCompany::class, 'owner_companies_id', 'id');
     }
 
+    public function courseModule()
+    {
+        return $this->belongsTo(CourseModule::class, 'course_module_id');
+    }
+
     public function loadCertificationsRelationships()
     {
         return $this->load([
@@ -160,6 +166,7 @@ class Event extends Model
             'ownerCompany',
             'room',
             'eLearning',
+            'courseModule.specCourse'
         ])
         ->loadCount(['certifications', 'userSurveys']);
     }

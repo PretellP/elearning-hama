@@ -132,15 +132,21 @@ class AdminEventsController extends Controller
             $message = $e->getMessage();
         }
 
-        if ($request->has('place') && $request['place'] == 'show') {
+        if ($request->has('place') ) {
             $event->loadRelationships();
-            $html = view('admin.events.partials._box_event', compact('event'))->render();
+
+            if ($request['place'] == 'show') {
+                $html = view('admin.events.partials._box_event', compact('event'))->render();
+            }
+            else if ($request['place'] == 'specCourse') {
+                $html = view('admin.specCourses.partials.components._event_box', compact('event'))->render();
+            }
         }
 
         return response()->json([
             "success" => $success,
             "message" => $message,
-            "html" => $html,
+            "html" => $html ?? null,
             "title" => mb_strtolower($event->description, 'UTF-8')
         ]);
     }

@@ -23,8 +23,11 @@ use App\Http\Controllers\Admin\{
     AdminSurveyGroupController,
     AdminSurveyOptionController,
     AdminSurveyStatementController,
+    CourseModuleController,
     CourseTypeController,
-    FileController
+    FileController,
+    SpecCourseController,
+    SpecCourseEventsController
 };
 use App\Http\Controllers\Aula\Common\{
     AulaHomeController,
@@ -239,7 +242,7 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
             });
 
             // --------------- COURSES ----------------------
-
+            //--- admin.courses.*
             Route::group(['prefix' => 'cursos', 'as' => 'courses.'], function () {
 
                 Route::controller(AdminCourseController::class)->group(function () {
@@ -269,6 +272,50 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
                         Route::get('/archivo/{file}/descargar', 'downloadFile')->name('folders.file.download');
                         Route::post('/{folder}/añadirArchivo', 'storeFile')->name('folders.file.store');
                         Route::delete('/archivo/{file}/eliminar', 'destroyFile')->name('folders.file.destroy');
+                    });
+                });
+            });
+
+            // -------------- SPEC COURSES -------------------
+
+            //----- admin.specCourses.* --------------
+            Route::group(['prefix' => 'cursos-de-especialización', 'as' => 'specCourses.'], function () {
+
+                Route::controller(SpecCourseController::class)->group(function () {
+
+                    Route::get('/', 'index')->name('index');
+                    Route::get('/ver/{specCourse}', 'show')->name('show');
+                    Route::get('/editar/{specCourse}', 'edit')->name('edit');
+                    Route::post('/registrar', 'store')->name('store');
+                    Route::post('/actualizar/{specCourse}', 'update')->name('update');
+                    Route::delete('/eliminar/{specCourse}', 'destroy')->name('destroy');
+                });
+
+                //----- admin.specCourses.modules.* --------------
+                Route::group(['prefix' => 'módulos', 'as' => 'modules.'], function () {
+
+                    Route::controller(CourseModuleController::class)->group(function () {
+
+                        Route::get('/editar/{module}', 'edit')->name('edit');
+                        Route::post('/registrar/{specCourse}', 'store')->name('store');
+                        Route::post('/actualizar-orden/{module}', 'updateOrder')->name('updateOrder');
+                        Route::post('/actualizar/{module}', 'update')->name('update');
+                        Route::delete('/eliminar/{module}', 'destroy')->name('destroy');
+                    });
+                });
+
+                //----- admin.specCourses.events.* --------------
+                Route::group(['prefix' => 'eventos', 'as' => 'events.'], function () {
+
+                    Route::controller(SpecCourseEventsController::class)->group(function () {
+
+                        Route::get('/obtener-eventos/{module}', 'getDataTable')->name('getDataTable');
+                        Route::get('/crear/obtener-data', 'create')->name('create');
+                        Route::get('/editar/{event}', 'edit')->name('edit');
+                        Route::get('/ver/{event}', 'show')->name('show');
+                        Route::post('/registrar/{module}', 'store')->name('store');
+                        Route::post('/actualizar/{event}', 'update')->name('update');
+                        Route::delete('/eliminar/{event}', 'destroy')->name('destroy');
                     });
                 });
             });

@@ -948,7 +948,7 @@ $(function () {
                 { data: 'name', name: 'name' },
                 { data: 'email', name: 'email' },
                 { data: 'role', name: 'role' },
-                { data: 'company.description', name: 'company.description'},
+                { data: 'company.description', name: 'company.description' },
                 { data: 'status-btn', name: 'status-btn', orderable: false, searchable: false },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ],
@@ -1371,7 +1371,7 @@ $(function () {
                         selectRole.attr('readonly', true)
                     } else {
                         selectRole.removeAttr('readonly')
-                    } 
+                    }
                 },
                 complete: function (data) {
                     modal.modal('toggle')
@@ -1929,7 +1929,7 @@ $(function () {
                             form.trigger('reset')
                             coursetypesTable.ajax.reload(null, false)
                             modal.modal('hide')
-    
+
                             Toast.fire({
                                 icon: 'success',
                                 text: data.message
@@ -1990,9 +1990,9 @@ $(function () {
 
                             editCoursetypeForm.resetForm()
                             coursetypesTable.ajax.reload(null, false)
-                           
+
                             modal.modal('hide')
-    
+
                             Toast.fire({
                                 icon: 'success',
                                 text: data.message
@@ -2091,7 +2091,7 @@ $(function () {
 
     if ($('#courses-table').length) {
 
-        function initTypeSelect (select, parent) {
+        function initTypeSelect(select, parent) {
             select.select2({
                 dropdownParent: parent,
                 placeholder: 'Selecciona un tipo',
@@ -2218,7 +2218,7 @@ $(function () {
                             form.find('input[name=description]').val('')
                             form.find('input[name=subtitle]').val('')
                             form.find('input[name=hours]').val('')
-    
+
                             Toast.fire({
                                 icon: 'success',
                                 text: data.message
@@ -2336,9 +2336,9 @@ $(function () {
                             editCourseForm.resetForm()
                             coursesTable.ajax.reload(null, false)
                             modal.modal('hide')
-    
+
                             $(img_holder).empty()
-    
+
                             Toast.fire({
                                 icon: 'success',
                                 text: data.message
@@ -2350,7 +2350,7 @@ $(function () {
                                 text: data.message
                             })
                         }
-                        
+
                     },
                     complete: function (data) {
                         loadSpinner.toggleClass('active')
@@ -2758,7 +2758,6 @@ $(function () {
 
         })
 
-
         $('.main-content').on('click', '.editCategory-btn', function () {
             var modal = $('#editCategoryModal')
             var getDataUrl = $(this).data('send')
@@ -2801,8 +2800,6 @@ $(function () {
             })
         })
 
-
-
         /* ----------- DELETE ---------------*/
 
         $('.main-content').on('click', '.deleteCategory-btn', function () {
@@ -2840,8 +2837,6 @@ $(function () {
                 return false;
             });
         })
-
-
 
         /* ------------  FREE COURSES ------------*/
 
@@ -3048,9 +3043,7 @@ $(function () {
             ]
         });
 
-
-        /* ---------- EDIT -----------*/
-
+        /* ---------- EDIT ----------- */
 
         $('#edit-category-status-checkbox').change(function () {
             var txtDesc = $('#txt-edit-description-category');
@@ -3148,7 +3141,6 @@ $(function () {
             }
 
         })
-
 
         $('.main-content').on('click', '.editCategory-btn', function () {
             var modal = $('#editCategoryModal')
@@ -4078,7 +4070,7 @@ $(function () {
                     success: function (file, response) {
 
                         if (response.success) {
-                            // let modal = $('#registerChapterModal')
+
                             let urlTable = $('#section-box-' + response.id).data('table')
 
                             this.removeAllFiles();
@@ -5951,7 +5943,6 @@ $(function () {
         return '( ! ) La puntuación máxima es ' + score
     }
 
-
     if ($('#events-table').length) {
 
 
@@ -5994,7 +5985,7 @@ $(function () {
             eventsTable.draw()
         })
 
-        /* ----- EVENTS TABLE ------*/
+        /* ----------- EVENTS TABLE ----------*/
 
         var eventsTableEle = $('#events-table');
         var getDataUrl = eventsTableEle.data('url');
@@ -6031,7 +6022,7 @@ $(function () {
             // dom: 'rtip'
         });
 
-        // --------------- REGISTRAR -----------------
+        // ------------- REGISTRAR ---------------
 
         if ($('#registerEventForm').length) {
 
@@ -6077,7 +6068,6 @@ $(function () {
                 placeholder: 'Selecciona un e-learning',
                 allowClear: true
             })
-
 
             $('#register-status-checkbox').change(function () {
                 var txtDesc = $('#txt-register-status');
@@ -6164,7 +6154,6 @@ $(function () {
                             modal.modal('hide')
                         },
                         error: function (data) {
-                            console.log(data)
                             ToastError.fire()
                         }
                     })
@@ -6283,6 +6272,8 @@ $(function () {
                 })
             })
 
+
+
             $('html').on('change', '#registerExamSelect', function () {
                 var form = $('#registerEventForm')
                 var qttyInput = form.find('input[name=questions_qty]')
@@ -6395,7 +6386,7 @@ $(function () {
             })
         }
 
-        /* -------------- EDITAR ---------------*/
+        /* --------------- EDITAR ---------------- */
 
         if ($('#editEventForm').length) {
 
@@ -6441,7 +6432,6 @@ $(function () {
                 placeholder: 'Selecciona un e-learning',
                 allowClear: true
             })
-
 
             $('#edit-status-checkbox').change(function () {
                 var txtDesc = $('#txt-edit-status');
@@ -6835,7 +6825,7 @@ $(function () {
         }
 
 
-        /* ------------- ELIMINAR ----------------*/
+        /* --------------- ELIMINAR ----------------*/
 
         $('.main-content').on('click', '.deleteEvent-btn', function () {
             var url = $(this).data('url')
@@ -7109,7 +7099,6 @@ $(function () {
                     })
                 }
             })
-
 
             $('.main-content').on('click', '.editEvent-btn', function () {
                 var getDataUrl = $(this).data('send')
@@ -9830,7 +9819,6 @@ $(function () {
             }
         })
 
-
     }
 
     // -------- STATEMENT SHOW -----------
@@ -10262,12 +10250,12 @@ $(function () {
         accept: 'Por favor, selecciona un archivo con extensión válida.'
     });
 
-    
-    jQuery.validator.addMethod("extension", 
+
+    jQuery.validator.addMethod("extension",
         function (value, element, param) {
             param = typeof param === "string" ? param.replace(/,/g, '|') : "png|jpe?g|gif";
             return this.optional(element) || value.match(new RegExp(".(" + param + ")$", "i"));
-    });
+        });
 
 })
 

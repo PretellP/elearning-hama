@@ -40,7 +40,8 @@ class EventRequest extends FormRequest
             'user_id' => ['required'],
             'responsable_id' => ['required'],
             'room_id' => ['required'],
-            'owner_companies_id' => ['nullable']
+            'owner_companies_id' => ['nullable'],
+            'course_module_id' => ['nullable']
         ];
     }
 }

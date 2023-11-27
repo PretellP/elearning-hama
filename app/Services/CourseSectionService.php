@@ -55,7 +55,7 @@ class CourseSectionService
         }
 
         return $success;
-    }
+    }   
 
     public function destroy(CourseSection $section)
     {

@@ -230,14 +230,16 @@ class FileService
                     if (Storage::disk($storage)->exists($directory . '/' . $original_name)) {
                         Storage::disk($storage)->delete($directory . '/' . $original_name);
                         Storage::disk($storage)->putFileAs($directory, $file, $original_name);
+
+                        $success = true;
                     } else {
                         list($file_path, $file_url) = $this->storeInStorage($directory, $original_name, $file, $storage);
                         $stored_file = $this->getStoredFile($file_path, $file_url, 'archivos',  $category);
 
                         $model->files()->save($stored_file);
-                    }
 
-                    $success = true;
+                        $success = true;
+                    }
                 }
                 else {
                     array_push($rejected, $original_name);

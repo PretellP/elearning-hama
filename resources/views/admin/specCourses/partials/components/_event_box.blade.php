@@ -127,32 +127,24 @@
         <div class="pt-2">
             <div class="status-cont text-no-wrap d-flex justify-content-between align-items-center gap-1 mb-2">
                 <span class="text-info-stat little-text"> Estado: &nbsp;</span>
-                <span class="status {{ getStatusClass($event->active) }}">
-                    {{ getStatusText($event->active) }}
-                </span>
+                {!! getStatusButton($event->active) !!}
             </div>
 
             <div class="status-cont text-no-wrap d-flex justify-content-between gap-1 mb-2">
                 <span class="text-info-stat little-text"> Asistencias: &nbsp;</span>
-                <span class="status {{ getStatusClass($event->flg_asist) }}">
-                    {{ getStatusText($event->flg_asist) }}
-                </span>
+                {!! getStatusButton($event->active) !!}
             </div>
 
             
             <div class="status-cont text-no-wrap d-flex justify-content-between gap-1 mb-2">
                 <span class="text-info-stat little-text"> Encuesta ficha sintomatológica: &nbsp;</span>
-                <span class="status {{ getStatusClass($event->flg_survey_course) }}">
-                    {{ getStatusText($event->flg_survey_evaluation) }}
-                </span>
+                {!! getStatusButton($event->flg_survey_course) !!}
             </div>
 
             
             <div class="status-cont text-no-wrap d-flex justify-content-between gap-1 mb-2">
                 <span class="text-info-stat little-text"> Encuesta de satisfacción: &nbsp;</span>
-                <span class="status {{ getStatusClass($event->flg_survey_evaluation) }}">
-                    {{ getStatusText($event->flg_survey_evaluation) }}
-                </span>
+                {!! getStatusButton($event->flg_survey_evaluation) !!}
             </div>
         </div>
 
@@ -210,7 +202,9 @@
                 $event->certifications_count == 0 &&
                 $event->user_surveys_count == 0
             )
-            <span class="delete-btn deleteEvent-btn" data-url="{{ route('admin.events.destroy', $event) }}">
+            <span class="delete-btn deleteSpecEvent-btn" 
+                data-place="show"
+                data-url="{{ route('admin.specCourses.events.destroy', $event) }}">
                 <i class="fa-solid fa-trash-can"></i>
             </span>
             @else
