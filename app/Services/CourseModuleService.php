@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\{CourseModule, SectionChapter, SpecCourse};
+use App\Models\{CourseModule, Event, SectionChapter, SpecCourse};
+use Auth;
+use Datatables;
 use Exception;
 
 class CourseModuleService
@@ -75,5 +77,83 @@ class CourseModuleService
             ]);
             $order++;
         }
+    }
+
+
+
+
+
+    // ------------ AULA --------------
+
+
+    public function getDataTable(SpecCourse $specCourse)
+    {
+        $user = Auth::user();
+
+        $query = $specCourse->modules()
+            ->whereHas('events', function ($q) use ($user) {
+                $q->where('user_id', $user->id)
+                    ->where('active', 'S');
+            })
+            ->withCount([
+                'events' => function ($q2) use ($user) {
+                    $q2->where('user_id', $user->id);
+                }
+            ])
+            ->where('active', 'S');
+
+        $allModules = Datatables::of($query)
+            ->editColumn('title', function ($module) {
+                return '<a href="'. route('aula.specCourses.modules.show', $module) .'">'. $module->title .'</a>';
+            })
+            ->addColumn('details', function ($module) {
+                return $module->events_count . ' - Eventos asignados';
+            })
+            ->rawColumns(['title'])
+            ->make(true);
+
+        return $allModules;
+    }
+
+    public function getEventsDataTable(CourseModule $module)
+    {
+        $user = Auth::user();
+
+        $query = $module->events()
+                        ->whereHas('courseModule', function ($q) {
+                            $q->where('course_modules.active', 'S');
+                        })
+                        ->where('user_id', $user->id)
+                        ->where('events.active', 'S')
+                        ->with([
+                            'room',
+                            'courseModule.specCourse'
+                        ])
+                        ->select('events.*');
+
+        $allEvents = DataTables::of($query)
+            ->editColumn('description', function ($event) {
+                return '<a href="'. route('aula.specCourses.modules.showParticipants', $event) .'">' . $event->description . '</a>';
+            })
+            ->editColumn('type', function ($event) {
+                return config('parameters.event_types')[verifyEventType($event->type)] ?? '-';
+            })
+            ->editColumn('active', function ($event) {
+                return getStatusButton($event->active);
+            })
+            ->editColumn('room.description', function ($event) {
+                return '<a href="'. route('aula.specCourses.onlinelesson.show', $event) .'">' . $event->room->description . '</a>';
+            })
+            ->rawColumns(['description', 'active', 'room.description'])
+            ->make(true);
+
+        return $allEvents;
+    }
+
+    public function getParticipantsDataTable(Event $event)
+    {
+        $user = Auth::user();
+
+        return app(CertificationService::class)->getInsParticipantsDatatable($user, $event);
     }
 }

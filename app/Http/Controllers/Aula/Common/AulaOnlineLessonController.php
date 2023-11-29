@@ -25,7 +25,8 @@ class AulaOnlineLessonController extends Controller
                                     ]);
                         })
                         ->with('user')
-                        ->where('date', getCurrentDate());
+                        ->where('date', getCurrentDate())
+                        ->doesntHave('courseModule');
 
         if ($user->role == 'participants') {
             $query->whereHas('certifications', function ($q2) use ($user) {
@@ -57,6 +58,6 @@ class AulaOnlineLessonController extends Controller
         return view('aula.common.courses.onlinelessons.viewlesson', [
             'course' => $course,
             'room' => $room
-        ]); 
+        ]);
     }
 }

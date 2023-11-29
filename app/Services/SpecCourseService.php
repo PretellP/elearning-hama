@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Models\{SpecCourse};
+use Auth;
 use Datatables;
+use DB;
 use Exception;
 use Illuminate\Support\Carbon;
 
@@ -15,7 +17,7 @@ class SpecCourseService
 
         $allSpecCourses = DataTables::of($query)
             ->editColumn('title', function ($specCourse) {
-            return '<a href="'. route('admin.specCourses.show', $specCourse) .'">'. $specCourse->title .'</a>';
+                return '<a href="' . route('admin.specCourses.show', $specCourse) . '">' . $specCourse->title . '</a>';
             })
             ->editColumn('subtitle', function ($specCourse) {
                 return $specCourse->subtitle ?? '-';
@@ -31,9 +33,9 @@ class SpecCourseService
             })
             ->addColumn('action', function ($specCourse) {
                 $btn = '<button data-toggle="modal" data-id="' .
-                    $specCourse->id . '" 
-                    data-url="'. route('admin.specCourses.update', $specCourse) .'"
-                    data-send="'. route('admin.specCourses.edit', $specCourse) .'"
+                    $specCourse->id . '"
+                    data-url="' . route('admin.specCourses.update', $specCourse) . '"
+                    data-send="' . route('admin.specCourses.edit', $specCourse) . '"
                     data-place="index"
                     data-original-title="edit" class="me-3 edit btn btn-warning btn-sm
                     editSpecCourse"><i class="fa-solid fa-pen-to-square"></i></button>';
@@ -41,7 +43,7 @@ class SpecCourseService
                 if ($specCourse->modules_count == 0) {
                     $btn .= '<a href="javascript:void(0)" data-id="' .
                         $specCourse->id . '" data-original-title="delete"
-                        data-url="'. route('admin.specCourses.destroy', $specCourse) .'"
+                        data-url="' . route('admin.specCourses.destroy', $specCourse) . '"
                         data-place="index"
                         class="ms-3 edit btn btn-danger btn-sm
                         deleteSpecCourse"><i class="fa-solid fa-trash-can"></i></a>';
@@ -105,9 +107,9 @@ class SpecCourseService
                 $category = 'cursosespec';
                 $belongsTo = 'cursosespec';
                 $relation = 'one_one';
-    
+
                 $file = $request->file('image');
-    
+
                 return app(FileService::class)->store(
                     $specCourse,
                     $file_type,
@@ -132,5 +134,45 @@ class SpecCourseService
         }
 
         return $specCourse->delete();
+    }
+
+
+    // ------------- AULA ------------------
+
+    public function getSpecCourses()
+    {
+        $user = Auth::user();
+
+        if ($user->role == 'instructor') {
+
+            $specCourses = SpecCourse::whereHas('events', function ($q) use ($user) {
+                $q->where('user_id', $user->id)
+                    ->where('events.active', 'S');
+            })
+                ->with([
+                    'events' => fn ($q) => $q->with([
+                        'user:id,name,paternal',
+                    ])
+                        ->select('events.id', 'events.course_module_id', 'events.user_id')
+                        ->where('events.active', 'S')
+                        ->whereHas('courseModule', function ($q2) {
+                            $q2->where('active', 'S');
+                        }),
+                    'file' => fn ($q) => $q->where('file_type', 'imagenes'),
+                ])
+                ->withCount(['specCourseCertifications as participants_count' => function ($q) use ($user) {
+                    $q->select(DB::raw('count(distinct(certifications.user_id))'))
+                        ->where('events.user_id', $user->id)
+                        ->where('events.active', 'S');
+                }])
+                ->where('active', 'S')
+                ->withMax('events', 'date')
+                ->get()
+                ->sortByDesc('events_max_date');
+
+        } elseif ($user->role == 'participants') {
+        }
+
+        return $specCourses ?? collect();
     }
 }

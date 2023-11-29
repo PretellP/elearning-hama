@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\{Course, CourseModule, Event, SpecCourse, User};
+use App\Models\{Course, CourseModule, Event, User};
 use Exception;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -63,7 +63,7 @@ class EventService
             })
             ->addColumn('action', function ($event) {
                 $btn = '<button data-toggle="modal" data-id="' .
-                    $event->id . '" data-url="' . route('admin.events.update', $event) . '" 
+                    $event->id . '" data-url="' . route('admin.events.update', $event) . '"
                                         data-send="' . route('admin.events.edit', $event) . '"
                                         data-original-title="edit" class="me-3 edit btn btn-warning btn-sm
                                         editEvent-btn"><i class="fa-solid fa-pen-to-square"></i></button>';
@@ -146,7 +146,7 @@ class EventService
         $allUsers = DataTables::of($users)
             ->addColumn('choose', function ($user) {
                 $checkbox = '<div class="custom-checkbox custom-control">
-                    <input type="checkbox" name="users-selected[]" 
+                    <input type="checkbox" name="users-selected[]"
                      class="custom-control-input checkbox-user-input" id="checkbox-' . $user->id . '" value="' . $user->dni . '">
                     <label for="checkbox-' . $user->id . '" class="custom-control-label checkbox-user-label">&nbsp;</label>
                 </div>';
@@ -177,6 +177,7 @@ class EventService
                 'room',
                 'exam.course'
             ])
+            ->doesntHave('courseModule')
             ->select('events.*');
 
         $allEvents = DataTables::of($query)
@@ -207,6 +208,7 @@ class EventService
         })
             ->whereYear('date', '=', date('Y'))
             ->where('active', 'S')
+            ->doesntHave('courseModule')
             ->select('events.*');
 
         $rawColumns = ['participants'];
@@ -225,8 +227,8 @@ class EventService
                     $button = '<i class="fa-solid fa-circle-check text-success"></i>';
 
                     if ($event->flg_security_por != 'S') {
-                        $button = '<a href="' . route('aula.signatures.security.index', [$event, getMiningUnitSufix($miningUnit->description)]) . '"> 
-                                        Pendiente 
+                        $button = '<a href="' . route('aula.signatures.security.index', [$event, getMiningUnitSufix($miningUnit->description)]) . '">
+                                        Pendiente
                                     </a>';
                     }
 
@@ -240,8 +242,8 @@ class EventService
                     $button = '<i class="fa-solid fa-circle-check text-success"></i>';
 
                     if ($event->flg_security != 'S') {
-                        $button = '<a href="' . route('aula.signatures.security.index', [$event, getMiningUnitSufix($miningUnit->description)]) . '"> 
-                                        Pendiente 
+                        $button = '<a href="' . route('aula.signatures.security.index', [$event, getMiningUnitSufix($miningUnit->description)]) . '">
+                                        Pendiente
                                     </a>';
                     }
 
@@ -339,7 +341,7 @@ class EventService
             })
             ->addColumn('action', function ($event) {
                 $btn = '<button data-toggle="modal" data-id="' .
-                    $event->id . '" data-url="'. route('admin.specCourses.events.update', $event) .'" 
+                    $event->id . '" data-url="'. route('admin.specCourses.events.update', $event) .'"
                                     data-send="' . route('admin.specCourses.events.edit', $event) . '"
                                     data-original-title="edit" class="me-3 edit btn btn-warning btn-sm
                                     editSpecEvent-btn"><i class="fa-solid fa-pen-to-square"></i></button>';

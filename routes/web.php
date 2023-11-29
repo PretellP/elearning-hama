@@ -36,6 +36,8 @@ use App\Http\Controllers\Aula\Common\{
     AulaProfileController,
     AulaSignaturesController,
     AulaOnlineLessonController,
+    AulaSpecCourseController,
+    AulaSpecOnlineLessonController,
 };
 use App\Http\Controllers\Aula\Participant\{
     QuizController,
@@ -46,6 +48,8 @@ use App\Http\Controllers\Aula\Participant\{
 };
 use App\Http\Controllers\Aula\Instructor\{
     AulaEventsInsController,
+    AulaSpecCoursesInsController,
+    AulaSpecModuleController,
 };
 
 // use App\Http\Controllers\Home\{HomeAboutController, HomeController, HomeCourseController, HomeCertificationController, HomeFreeCourseController};
@@ -624,7 +628,6 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
             });
 
             // -------------- FIRMA DIGITAL ------------------
-
             //------- aula.signatures.* -------------
             Route::group(['prefix' => 'firma-digital', 'as' => 'signatures.'], function () {
 
@@ -633,6 +636,49 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
                     Route::get('/', 'index')->name('index');
                     Route::get('/crear-firma', 'create')->name('create');
                     Route::post('/registrar-firma', 'store')->name('store');
+                });
+            });
+
+            // -------------- SPEC COURSES ----------------
+            // ---- aula.specCourses.* -----------
+            Route::group([
+                'prefix' => 'cursos-de-especialización',
+                'as' => 'specCourses.',
+                'middleware' => 'check.role:participants,instructor'
+            ], function () {
+
+                Route::controller(AulaSpecCourseController::class)->group(function () {
+
+                    Route::get('/', 'index')->name('index');
+                    Route::get('/ver/{specCourse}', 'show')->name('show');
+                });
+
+                 // ---- aula.specCourses.onlinelesson.* -----------
+                Route::group([
+                    'prefix' => 'clase-virtual',
+                    'as' => 'onlinelesson.',
+                ], function () {
+
+                    Route::controller(AulaSpecOnlineLessonController::class)->group(function () {
+
+                        Route::get('/{specCourse}', 'index')->name('index');
+                        Route::get('/ver/{event}', 'show')->name('show');
+                    });
+                });
+
+                 // ---- aula.specCourses.modules.* -----------
+                Route::group([
+                    'prefix' => 'modulos',
+                    'as' => 'modules.',
+                    'middleware' => 'check.role:instructor'
+                ], function () {
+
+                    Route::controller(AulaSpecModuleController::class)->group(function () {
+
+                        Route::get('/{specCourse}', 'index')->name('index');
+                        Route::get('/modulo/{module}', 'show')->name('show');
+                        Route::get('/modulo/ver-participantes/{event}', 'showParticipants')->name('showParticipants');
+                    });
                 });
             });
 
@@ -707,6 +753,16 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
                         });
                     });
                 });
+
+                // ---------- SPEC COURSES --------------
+
+                Route::group(['prefix' => 'cursos-de-especialización/instructor', 'as' => 'specCourses.'], function () {
+
+                    Route::controller(AulaSpecCoursesInsController::class)->group(function () {
+
+
+                    });
+                });
             });
 
             // --------------- SEGURIDAD --------------------
@@ -737,7 +793,7 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
 
                     //------- aula.signatures.security.* -----------
                     Route::controller(AulaSignaturesController::class)->group(function () {
-                        
+
                         Route::get('/{event}/{miningUnit}', 'indexSecurity')->name('index');
                         Route::get('/{event}/{miningUnit}/crear-firma', 'createSecurity')->name('create');
                         Route::post('/{event}/{miningUnit}/registrar-firma', 'storeSecurity')->name('store');

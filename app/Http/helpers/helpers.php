@@ -282,6 +282,25 @@ function getOwnerCompanyFromCertification(Certification $certification)
 // ------------------------------------------------
 
 
+// ------------ SPEC COURSES -----------------
+
+function getSpecCourseInstructors($specCourse)
+{
+    $user = Auth::user();
+
+    if ($user->role == 'instructor') {
+
+        $instructors = $specCourse->events->map(function ($event) {
+            return $event->user;
+        })->unique();
+    }
+    else if ($user->role == 'participants') {
+
+    }
+
+    return $instructors ?? collect();
+}
+
 
 
 // ---------------- FREE COURSES ------------------
@@ -451,8 +470,8 @@ function getStatusText($status)
 
 function getStatusButton($status)
 {
-    return '<span class="status ' . ($status == 'S' ? 'active' : 'inactive') . '">' . 
-                ($status == 'S' ? 'Activo' : 'Inactivo') . 
+    return '<span class="status ' . ($status == 'S' ? 'active' : 'inactive') . '">' .
+                ($status == 'S' ? 'Activo' : 'Inactivo') .
             '</span>';
 }
 
@@ -632,10 +651,10 @@ function getMiningUnitSufix($description)
 {
     $sufix = '-';
 
-    if (Str::is('*ATACOCHA*', strtoupper($description))) $sufix = 'A'; 
-    if (Str::is('*PORVENIR*', strtoupper($description))) $sufix = 'P'; 
-    if (Str::is('*SINAYCOCHA*', strtoupper($description))) $sufix = 'S'; 
-    if (Str::is('*CERRO*', strtoupper($description))) $sufix = 'C'; 
+    if (Str::is('*ATACOCHA*', strtoupper($description))) $sufix = 'A';
+    if (Str::is('*PORVENIR*', strtoupper($description))) $sufix = 'P';
+    if (Str::is('*SINAYCOCHA*', strtoupper($description))) $sufix = 'S';
+    if (Str::is('*CERRO*', strtoupper($description))) $sufix = 'C';
 
     return $sufix;
 }

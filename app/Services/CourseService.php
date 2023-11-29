@@ -142,7 +142,7 @@ class CourseService
                         $q2->where('file_type', 'imagenes')
                             ->where('category', 'cursos')
                             ->select('id', 'file_url', 'file_type', 'category', 'fileable_id', 'fileable_type'),
-                        'events' => fn ($q5) => 
+                        'events' => fn ($q5) =>
                         $q5->whereYear('events.date', '=', date('Y'))
                             ->with('user:id,name,paternal')
                     ])

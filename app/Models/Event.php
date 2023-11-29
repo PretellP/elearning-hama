@@ -88,7 +88,7 @@ class Event extends Model
       public function securityPor()
     {
         return $this->belongsTo(User::class,'security_por_id');
-    }  
+    }
 
     public function room()
     {
@@ -113,6 +113,11 @@ class Event extends Model
     public function courseModule()
     {
         return $this->belongsTo(CourseModule::class, 'course_module_id');
+    }
+
+    public function specCourse()
+    {
+        return $this->belongsToThrough(SpecCourse::class, CourseModule::class);
     }
 
     public function loadCertificationsRelationships()
@@ -140,7 +145,7 @@ class Event extends Model
             [
                 'participants' => function ($query) {
                     $query->where('certifications.evaluation_type', 'certification');
-                }, 
+                },
                 'certifications as finished_certifications_count' => function ($query2) {
                     $query2->where('status', 'finished')
                             ->where('evaluation_type', 'certification');
@@ -178,7 +183,7 @@ class Event extends Model
     public function getDateEsAttribute()
     {
         $date_carbon = Carbon::parse($this->date);
-        $month_es = config('parameters.months_es')[$date_carbon->isoFormat('MM')]; 
+        $month_es = config('parameters.months_es')[$date_carbon->isoFormat('MM')];
 
         return $date_carbon->isoFormat('DD') . ' de ' . $month_es . ' del ' . $date_carbon->isoFormat('YYYY');
     }

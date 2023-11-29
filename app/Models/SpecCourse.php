@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class SpecCourse extends Model
 {
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
     use HasFactory;
 
     protected $table = 'spec_courses';
@@ -37,6 +39,12 @@ class SpecCourse extends Model
     public function events()
     {
         return $this->hasManyThrough(Event::class, CourseModule::class, 'spec_course_id', 'course_module_id');
+    }
+
+    public function specCourseCertifications()
+    {
+        return $this->hasManyDeep(Certification::class, [CourseModule::class, Event::class])
+                    ->withIntermediate(Event::class, ['id','course_module_id','user_id']);
     }
 
     public function loadImage()

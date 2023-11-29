@@ -6,7 +6,7 @@
                 <img src="{{asset('assets/common/images/logo-red.png')}}" alt="">
             </a>
         </div>
-        
+
         <div class="sidebar-brand hidden sidebar-brand-sm">
             <a href="{{route('aula.index')}}">
                 <img src="{{asset('assets/common/images/logo-red.png')}}" alt="">
@@ -14,13 +14,6 @@
         </div>
 
         <ul class="sidebar-menu">
-
-            {{-- <li>
-                <a href="{{route('home.index')}}" class="nav-link">
-                    <i class="fa-solid fa-caret-left"></i>
-                    <span>Volver a la página principal</span>
-                </a>
-            </li> --}}
 
             <li class="{{setActive('aula.index')}}">
                 <a href="{{route('aula.index')}}" class="nav-link">
@@ -54,7 +47,7 @@
             </li>
 
             @can('denySecurity')
-            
+
             <li class="{{setActive('aula.signatures.*')}}">
                 <a href="{{ route('aula.signatures.index') }}" class="nav-link">
                     <i class="fa-solid fa-signature"></i>
@@ -63,14 +56,25 @@
             </li>
 
             @endcan
-            
+
             <li class="{{setActive('aula.course.*')}}">
                 <a href="{{route('aula.course.index')}}" class="nav-link">
                     <i class="fa-solid fa-book"></i>
                     <span>E-Learning</span>
                 </a>
             </li>
-           
+
+            @can('allowInstructor')
+
+            <li class="{{ setActive('aula.specCourses.*') }}">
+                <a href="{{ route('aula.specCourses.index') }}" class="nav-link">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>Cursos de Especialización</span>
+                </a>
+            </li>
+
+            @endcan
+
             @can(['denyInstructor', 'denySecurity'])
 
             <li class="{{setActive('aula.freecourse.*')}}">
@@ -92,16 +96,16 @@
                     <i class="fa-solid fa-square-poll-vertical"></i>
                     <span>Encuestas</span>
                     @if (validateSurveys())
-                    <i class="fa-solid fa-circle-exclamation surveys-notify"></i> 
+                    <i class="fa-solid fa-circle-exclamation surveys-notify"></i>
                     @endif
                 </a>
             </li>
-                
+
             @endcan
 
 
             <li>
-                <a href="#" class="nav-link" onclick="event.preventDefault(); 
+                <a href="#" class="nav-link" onclick="event.preventDefault();
                 document.getElementById('logout-form').submit();">
                    <i class="fa-solid fa-right-from-bracket"></i>
                     <span>Cerrar sesión</span>

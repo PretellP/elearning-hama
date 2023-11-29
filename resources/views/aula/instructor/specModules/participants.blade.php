@@ -9,11 +9,11 @@
         <div class="card-header">
             <div class="total-width-container">
                 <h4>
-                    <a href="{{route('aula.course.index')}}">
+                    <a href="{{ route('aula.specCourses.index') }}">
                         <i class="fa-solid fa-circle-chevron-left"></i> Cursos
                     </a>
-                    <span> / {{$event->course->description}} </span> /
-                    <a href="{{ route('aula.course.show', ["course" => $event->course]) }}">
+                    <span> / {{$event->specCourse->title}} </span> /
+                    <a href="{{ route('aula.specCourses.show', ["specCourse" => $event->specCourse]) }}">
                         MENÚ
                     </a>
                 </h4>
@@ -25,10 +25,14 @@
         <div class="card-header">
             <div class="total-width-container">
                 <h4>
-                    <a href="{{ route('aula.course.events.instructor.index', ["course" => $event->course]) }}">
-                        Eventos
+                    <a href="{{ route('aula.specCourses.modules.index', ["specCourse" => $event->specCourse]) }}">
+                        MÓDULOS
                     </a>
-                    <span> / {{ $event->description }} </span>
+                    <span> / {{ $event->courseModule->title }} / </span>
+                    <a href="{{ route('aula.specCourses.modules.show', ["module" => $event->courseModule]) }}">EVENTOS</a>
+                    <span>
+                        / {{ $event->description }}
+                    </span>
                 </h4>
             </div>
         </div>
@@ -39,7 +43,7 @@
 
         <div class="course-container">
 
-            <table id="participants-table" class="table table-hover" data-url="{{ route('aula.course.events.instructor.show', $event) }}">
+            <table id="participants-table" class="table table-hover" data-url="">
                 <thead>
                     <tr>
                         <th>Cod. Certificado</th>
@@ -64,6 +68,6 @@
 
 @section('extra-script')
 
-<script type="module" src="{{ asset('assets/aula/js/pages/events.js') }}"></script>
+<script type="module" src="{{ asset('assets/aula/js/pages/spec_modules.js') }}"></script>
 
 @endsection
