@@ -44,7 +44,9 @@ use App\Http\Controllers\Aula\Participant\{
     AulaEvaluationController,
     AulaFreeCourseController,
     AulaMyProgressController,
-    AulaSurveysController
+    AulaSpecEvaluationController,
+    AulaSurveysController,
+    SpecQuizController
 };
 use App\Http\Controllers\Aula\Instructor\{
     AulaEventsInsController,
@@ -678,6 +680,30 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
                         Route::get('/{specCourse}', 'index')->name('index');
                         Route::get('/modulo/{module}', 'show')->name('show');
                         Route::get('/modulo/ver-participantes/{event}', 'showParticipants')->name('showParticipants');
+                    });
+                });
+
+                // ---- aula.specCourses.evaluations.* -----------
+                Route::group([
+                    'prefix' => 'evaluaciones',
+                    'as' => 'evaluations.',
+                    'middleware' => 'check.role:participants'
+                ], function () {
+
+                    Route::controller(AulaSpecEvaluationController::class)->group(function () {
+
+                        Route::get('/{specCourse}', 'index')->name('index');
+                    });
+
+                    // ---- aula.specCourses.evaluations.quiz.* -----------
+                    Route::group(['as' => 'quiz.'], function () {
+
+                        Route::controller(SpecQuizController::class)->group(function () {
+
+                            Route::get('/{certification}/pregunta/{num_question}', 'show')->name('show');
+                            Route::post('/{certification}', 'start')->name('start');
+                            Route::patch('/{certification}/{exam}/pregunta/{num_question}/{key}/{evaluation}', 'update')->name('update');
+                        });
                     });
                 });
             });

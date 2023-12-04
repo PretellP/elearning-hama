@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Aula\Participant;
 
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\{
     Exam,
     DynamicQuestion,
@@ -10,15 +12,11 @@ use App\Models\{
     Certification,
     Evaluation
 };
-
-use Carbon\Carbon;
-use App\Http\Controllers\Controller;
 use App\Services\Classroom\ClassroomQuizService;
 use Auth;
+use Carbon\Carbon;
 
-date_default_timezone_set("America/Lima");
-
-class QuizController extends Controller
+class SpecQuizController extends Controller
 {
     private $quizService;
 
@@ -29,6 +27,8 @@ class QuizController extends Controller
 
     public function show(Certification $certification, $num_question)
     {
+        $certification->load('event.specCourse');
+
         $evaluations = $certification->evaluations;
 
         $selected_answers = getSelectedAnswers($certification);
@@ -39,11 +39,8 @@ class QuizController extends Controller
         }
 
         $question = DynamicQuestion::findOrFail($evaluations[$num_question - 1]->question_id);
-
         $exam = $question->exam;
-
         $event_date = $certification->event->date;
-
         $its_time_out = getItsTimeOut(getTimeDifference($certification, $exam));
 
         if (!$its_time_out && getCurrentDate() == $event_date && $certification->assist_user == 'S') {
@@ -51,18 +48,13 @@ class QuizController extends Controller
             if ($question->question_type_id == 5) {
 
                 $str_options = $evaluations[$num_question - 1]->correct_alternatives;
-
                 $alts_and_options_array = explode(":", $str_options);
-
                 $alts_ids = explode(",", $alts_and_options_array[0]);
-
                 $options_ids = explode(",", $alts_and_options_array[1]);
-
                 $alternatives = DynamicAlternative::whereIn('id', $alts_ids)->with('file')->get(['id', 'description']);
-
                 $droppables = DroppableOption::whereIn('id', $options_ids)->get(['id', 'description']);
 
-                return view('aula.viewParticipant.courses.evaluations.quiz', [
+                return view('aula.viewParticipant.specCourses.evaluations.quiz', [
                     'exam' => $exam,
                     'num_question' => $num_question - 1,
                     'question' => $question,
@@ -76,7 +68,7 @@ class QuizController extends Controller
                 ]);
             }
 
-            return view('aula.viewParticipant.courses.evaluations.quiz', [
+            return view('aula.viewParticipant.specCourses.evaluations.quiz', [
                 'exam' => $exam,
                 'num_question' => $num_question - 1,
                 'question' => $question,
@@ -85,8 +77,8 @@ class QuizController extends Controller
                 'selected_answers' => $selected_answers
             ]);
         } else {
-            $course = $exam->course;
-            return redirect()->route('aula.course.evaluation.index', $course);
+            $specCourse = $certification->event->specCourse;
+            return redirect()->route('aula.specCourses.evaluations.index', $specCourse);
         }
     }
 
@@ -130,7 +122,6 @@ class QuizController extends Controller
                     }
 
                     if ($question->question_type_id == 5) {
-
                         $alt_ids .= ":";
 
                         $droppable_options = (getDroppableOptionsFromQuestion($question))->shuffle();
@@ -163,14 +154,15 @@ class QuizController extends Controller
                 }
             }
             else {
-                return redirect()->route('aula.course.evaluation.index', ["course" => $event->course]);
+                return redirect()->route('aula.specCourses.evaluations.index', ["specCourse" => $event->specCourse]);
             }
         }
 
-        if($certification->evaluation_time != null){
+        if ($certification->evaluation_time != null) {
+
             $num_question = getSelectedAnswers($certification);
 
-            return redirect()->route('aula.course.quiz.show', [
+            return redirect()->route('aula.specCourses.evaluations.quiz.show', [
                 'certification' => $certification,
                 'num_question' => $num_question + 1
             ]);
@@ -178,6 +170,7 @@ class QuizController extends Controller
 
         abort(401);
     }
+
 
     public function update(Certification $certification, Exam $exam, $num_question, $key, $evaluation)
     {
@@ -187,6 +180,7 @@ class QuizController extends Controller
         $event_date = $certification->event->date;
 
         if (!$its_time_out && getCurrentDate() == $event_date) {
+
             $question = DynamicQuestion::where('id', $evaluation->question_id)->first();
             $correct_alternatives = getCorrectAltFromQuestion($question);
 
@@ -260,7 +254,7 @@ class QuizController extends Controller
             ]);
 
             if ($num_question < $key) {
-                return redirect()->route('aula.course.quiz.show', [
+                return redirect()->route('aula.specCourses.evaluations.quiz.show', [
                     'certification' => $certification,
                     'num_question' => $num_question + 1
                 ]);
@@ -283,8 +277,8 @@ class QuizController extends Controller
             'score' => $score,
         ]);
 
-        $course = $exam->course;
+        $specCourse = $certification->event->specCourse;
 
-        return redirect()->route('aula.course.evaluation.index', $course);
+        return redirect()->route('aula.specCourses.evaluations.index', $specCourse);
     }
 }

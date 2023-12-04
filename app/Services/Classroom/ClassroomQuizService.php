@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 
-class ClassroomQuizService 
+class ClassroomQuizService
 {
     public function getEnabledUserSurvey(Certification $certification)
     {

@@ -10237,7 +10237,6 @@ $(function () {
     Dropzone.prototype.defaultOptions.dictRemoveFile = "Quitar archivo ";
     Dropzone.prototype.defaultOptions.dictMaxFilesExceeded = "No puedes subir más archivos.";
 
-
     jQuery.extend(jQuery.validator.messages, {
         required: '<i class="fa-solid fa-circle-exclamation"></i> &nbsp; Este campo es obligatorio',
         email: 'Ingrese un email válido',
@@ -10250,12 +10249,10 @@ $(function () {
         accept: 'Por favor, selecciona un archivo con extensión válida.'
     });
 
-
     jQuery.validator.addMethod("extension",
         function (value, element, param) {
             param = typeof param === "string" ? param.replace(/,/g, '|') : "png|jpe?g|gif";
             return this.optional(element) || value.match(new RegExp(".(" + param + ")$", "i"));
-        });
-
+    });
 })
 

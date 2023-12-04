@@ -3,18 +3,29 @@
 namespace App\Http\Controllers\Aula\Participant;
 
 use App\Http\Controllers\Controller;
-use App\Services\{CourseService, FreeCourseService};
+use App\Services\{CourseService, FreeCourseService, SpecCourseService};
 use Auth;
 
 class AulaMyProgressController extends Controller
 {
-    public function index(FreeCourseService $freeCourseService, CourseService $courseService)
+    private $freeCourseService;
+    private $courseService;
+    private $specCourseService;
+
+    public function __construct(FreeCourseService $fcService, CourseService $cService, SpecCourseService $scService)
+    {
+        $this->freeCourseService = $fcService;
+        $this->courseService = $cService;
+        $this->specCourseService = $scService;
+    }
+
+    public function index()
     {
         $user = Auth::user();
 
-        $courses = $courseService->getCoursesBasedOnRole($user);
+        $courses = $this->courseService->getCoursesBasedOnRole($user);
 
-        $freeCourses = $freeCourseService->withFreeCourseRelationshipsQuery()
+        $freeCourses = $this->freeCourseService->withFreeCourseRelationshipsQuery()
             ->where('active', 'S')
             ->with('courseChapters.progressUsers', function ($q) use ($user) {
                 $q->wherePivot('user_id', $user->id);
@@ -24,9 +35,12 @@ class AulaMyProgressController extends Controller
             })
             ->get();
 
-        return view('aula.viewParticipant.myprogress.index', [
-            'courses' => $courses,
-            'freeCourses' => $freeCourses,
-        ]);
+        $specCourses = $this->specCourseService->getSpecCourses();
+
+        return view('aula.viewParticipant.myprogress.index', compact(
+            'courses',
+            'freeCourses',
+            'specCourses'
+        ));
     }
 }

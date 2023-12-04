@@ -64,7 +64,7 @@
                 </a>
             </li>
 
-            @can('allowInstructor')
+            @can('denySecurity')
 
             <li class="{{ setActive('aula.specCourses.*') }}">
                 <a href="{{ route('aula.specCourses.index') }}" class="nav-link">

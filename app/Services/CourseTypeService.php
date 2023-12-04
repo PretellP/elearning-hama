@@ -13,7 +13,7 @@ class CourseTypeService
 {
     public function getDataTable()
     {
-        $query = CourseType::withCount('courses')->get();
+        $query = CourseType::withCount('courses');
 
         $allCoursestypes = DataTables::of($query)
             ->editColumn('created_at', function ($coursetype) {
@@ -28,7 +28,7 @@ class CourseTypeService
                                         data-send="'. route('admin.coursetypes.edit', $coursetype) .'"
                                         data-original-title="edit" class="me-3 edit btn btn-warning btn-sm
                                         editCoursetype"><i class="fa-solid fa-pen-to-square"></i></button>';
-                if ($coursetype->courses_count == 0) 
+                if ($coursetype->courses_count == 0)
                 {
                     $btn .= '<a href="javascript:void(0)" data-id="' .
                         $coursetype->id . '" data-original-title="delete"

@@ -45,7 +45,7 @@ $(function () {
                 { data: 'course_module.spec_course.title', name: 'courseModule.specCourse.title' },
             ],
             order: [
-                [3, 'desc']
+                [3, 'asc']
             ]
         });
     }

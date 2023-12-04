@@ -107,20 +107,20 @@
                         </span>
                         <canvas class="canva-progress" id="progress-chart-{{$course->id}}"></canvas>
                 </div>
-                
+
             </div>
 
             <hr>
 
             @empty
 
-            <h4 class="text-center empty-records-message"> Aún no tienes cursos registrados </h4>
+            <h4 class="text-center empty-records-message"> Aún no tienes Cursos registrados </h4>
 
             @endforelse
 
         </div>
 
-        
+
 
         <div class="progress-section-title-container">
             Mis Cursos libres
@@ -133,6 +133,7 @@
                 $completedChapters = getCompletedChapters($freeCourse->courseChapters);
             @endphp
             <div class="course-box">
+
                 <div class="course-progress-innerbox">
                     <div class="course-progress-img">
                         <img src="{{verifyImage($freeCourse->file)}}" alt="">
@@ -198,8 +199,56 @@
 
             @endforelse
 
+        </div>
 
+        <div class="progress-section-title-container">
+            Mis Cursos de Especialización
+        </div>
 
+        <div class="course-progress-container mb-6">
+            @forelse ($specCourses as $specCourse)
+            @php
+
+            @endphp
+
+            <div class="course-box">
+
+                <div class="course-progress-innerbox">
+                    <div class="course-progress-img">
+                        <img src="{{verifyImage($specCourse->file)}}" alt="">
+                    </div>
+                    <div class="course-progress-info pb-3">
+                        <div class="title">
+                            {{$specCourse->title}}
+                        </div>
+                        <a class="btn-start" href="" onclick="event.preventDefault();
+                        document.getElementById('specCourse-start-form').submit();" class="btn-start">
+                            Ingresar
+                        </a>
+                        <form id='specCourse-start-form' method="POST" action="{{route('aula.freecourse.start', ["course" => $freeCourse])}}">
+                            @csrf
+                        </form>
+
+                    </div>
+                </div>
+
+                {{-- <div class="progress-line assist">
+                    @foreach ($certifications->sortBy('id') as $evaluation)
+                    @if ($evaluation->status == 'finished')
+                    <div class="progress-bar finished"></div>
+                    @elseif(in_array($evaluation->status, ['pending', 'in_progress']))
+                    <div class="progress-bar pending"></div>
+                    @endif
+                    @endforeach
+                </div> --}}
+
+            </div>
+
+            <hr>
+
+            @empty
+            <h4 class="text-center empty-records-message"> Aún no tienes Cursos de especialización registrados </h4>
+            @endforelse
         </div>
 
     </div>

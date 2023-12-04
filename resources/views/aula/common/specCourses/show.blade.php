@@ -10,7 +10,7 @@
             <div class="total-width-container">
                 <h4>
                     <a href="{{ route('aula.specCourses.index') }}">
-                        <i class="fa-solid fa-circle-chevron-left"></i> Cursos
+                        <i class="fa-solid fa-circle-chevron-left"></i> Cursos de especialización
                     </a>
                     <span> / {{$specCourse->title}} </span> / MENÚ
                 </h4>
@@ -40,7 +40,7 @@
 
             @can('denyInstructor')
 
-            <a href="" class="link-box-navigation-course">
+            <a href="{{ route('aula.specCourses.evaluations.index', $specCourse) }}" class="link-box-navigation-course">
                 <div class="navigation-box evaluation card">
                     <div class="img-container">
                         <img src="{{asset('assets/aula/img/courses/quiz.png')}}" alt="">

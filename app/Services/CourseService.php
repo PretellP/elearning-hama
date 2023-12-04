@@ -17,12 +17,12 @@ class CourseService
                         'exams',
                     ])
                     ->with('type')
-                    ->where('course_type', 'REGULAR')
-                    ->select('courses.*');
+                    ->where('course_type', 'REGULAR');
+                    // ->select('courses.*');
 
         $allCourses = DataTables::of($query)
             ->editColumn('course_type_id', function ($course) {
-                return $course->type == null ? '-' : $course->type->name;
+                return $course->type->name ?? '-';
             })
             ->editColumn('subtitle', function ($course) {
                 return $course->subtitle ?? '-';
@@ -95,11 +95,11 @@ class CourseService
         } else if ($user->role == 'participants') {
 
             $courses = Course::whereHas('exams.events.certifications', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
+                    $query->where('user_id', $user->id);
                 })
                 ->with([
                     'exams' => fn ($query2) =>
-                    $query2->select('id', 'course_id')
+                        $query2->select('id', 'course_id')
                         ->whereHas('events.certifications', function ($query3) use ($user) {
                             $query3->where('user_id', $user->id);
                         })
@@ -123,6 +123,7 @@ class CourseService
                                             'score'
                                         )
                                 ])
+                                ->doesntHave('courseModule')
                         ]),
                     'file' => fn ($query7) =>
                     $query7->where('file_type', 'imagenes')
@@ -133,6 +134,7 @@ class CourseService
                 ->where('active', 'S')
                 ->get()
                 ->sortByDesc('events_max_date');
+
         } else if (in_array($user->role, ['security_manager', 'security_manager_admin'])) {
             $courses = Course::whereHas('type', function ($q) {
                         $q->whereRaw("(LOWER(course_types.name) LIKE '%inducci%')");

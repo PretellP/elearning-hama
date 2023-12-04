@@ -9,7 +9,7 @@
             <div class="total-width-container">
                 <h4>
                     <a href="{{ route('aula.specCourses.index') }}">
-                        <i class="fa-solid fa-circle-chevron-left"></i> Cursos
+                        <i class="fa-solid fa-circle-chevron-left"></i> Cursos de especialización
                     </a>
                     <span> / {{$specCourse->title}} </span> /
                     <a href="{{route('aula.specCourses.show', $specCourse)}}">

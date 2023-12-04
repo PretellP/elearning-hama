@@ -4,13 +4,20 @@ namespace App\Http\Controllers\Aula\Participant;
 
 use App\Http\Controllers\Controller;
 use App\Models\{Certification, Course};
+use App\Services\EvaluationService;
 
 class AulaEvaluationController extends Controller
 {
+    private $evaluationService;
+
+    public function __construct(EvaluationService $service)
+    {
+        $this->evaluationService = $service;
+    }
 
     public function index(Course $course)
     {
-        $certifications = getCertificationsFromCourse($course);
+        $certifications = $this->evaluationService->getCertificationsFromCourse($course);
 
         return view('aula.viewParticipant.courses.evaluations.index', [
             'certifications'=> $certifications,

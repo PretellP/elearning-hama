@@ -19,10 +19,9 @@
 
             @if(!is_null($exam))
 
-
             <div class="info">
 
-                <h3> {{$exam->title}} </h3>
+                <h3> {{$certification->event->specCourse->title}} </h3>
 
                 <div class="timer-container">
                     <i class="fa-regular fa-clock fa-spin fa-lg"></i> &nbsp;
@@ -55,34 +54,34 @@
 
                 @endif
 
-
-
-
                 @endforeach
 
             </ul>
 
-
             @if ($type_id == 1 || $type_id == 3)
-            @include('aula.viewParticipant.courses.evaluations.types.unique_answer', [
-                                                                                        "route" => route('aula.course.quiz.show', [$certification, ($num_question)]),
-                                                                                        "routeUpdate" => route('aula.course.quiz.update', [$certification, $exam, ($num_question+1), $key+1, $evaluation->id])
-                                                                                    ])
+            @include('aula.viewParticipant.courses.evaluations.types.unique_answer',
+            [
+                "route" => route('aula.specCourses.evaluations.quiz.show', [$certification, ($num_question)]),
+                "routeUpdate" => route('aula.specCourses.evaluations.quiz.update', [$certification, $exam, ($num_question+1), $key+1, $evaluation->id])
+            ])
             @elseif ($type_id == 2)
-            @include('aula.viewParticipant.courses.evaluations.types.multiple_answers',  [
-                                                                                            "route" => route('aula.course.quiz.show', [$certification, ($num_question)]),
-                                                                                            "routeUpdate" => route('aula.course.quiz.update', [$certification, $exam, ($num_question+1), $key+1, $evaluation->id])
-                                                                                        ])
+            @include('aula.viewParticipant.courses.evaluations.types.multiple_answers',
+            [
+                "route" => route('aula.specCourses.evaluations.quiz.show', [$certification, ($num_question)]),
+                "routeUpdate" => route('aula.specCourses.evaluations.quiz.update', [$certification, $exam, ($num_question+1), $key+1, $evaluation->id])
+            ])
             @elseif ($type_id == 4)
-            @include('aula.viewParticipant.courses.evaluations.types.fill_in_the_blank', [
-                                                                                            "route" => route('aula.course.quiz.show', [$certification, ($num_question)]),
-                                                                                            "routeUpdate" => route('aula.course.quiz.update', [$certification, $exam, ($num_question+1), $key+1, $evaluation->id])
-                                                                                        ])
+            @include('aula.viewParticipant.courses.evaluations.types.fill_in_the_blank',
+            [
+                "route" => route('aula.specCourses.evaluations.quiz.show', [$certification, ($num_question)]),
+                "routeUpdate" => route('aula.specCourses.evaluations.quiz.update', [$certification, $exam, ($num_question+1), $key+1, $evaluation->id])
+            ])
             @elseif ($type_id == 5)
-            @include('aula.viewParticipant.courses.evaluations.types.matching',  [
-                                                                                    "route" => route('aula.course.quiz.show', [$certification, ($num_question)]),
-                                                                                    "routeUpdate" => route('aula.course.quiz.update', [$certification, $exam, ($num_question+1), $key+1, $evaluation->id])
-                                                                                ])
+            @include('aula.viewParticipant.courses.evaluations.types.matching',
+            [
+                "route" => route('aula.specCourses.evaluations.quiz.show', [$certification, ($num_question)]),
+                "routeUpdate" => route('aula.specCourses.evaluations.quiz.update', [$certification, $exam, ($num_question+1), $key+1, $evaluation->id])
+            ])
             @endif
 
             <script>

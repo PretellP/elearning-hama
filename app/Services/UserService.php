@@ -22,8 +22,7 @@ class UserService
                         'publishings',
                         'userSurveys'
                     ]
-                )
-                ->select('users.*');
+                );
 
         $allUsers = DataTables::of($query)
             ->addColumn('name', function ($user) {
@@ -33,7 +32,7 @@ class UserService
                 return config('parameters.roles')[$user->role] ?? '-';
             })
             ->editColumn('company.description', function ($user) {
-                $company = $user->company == null ? '-' : $user->company->description;
+                $company = $user->company->description ?? '-';
 
                 return $company;
             })
@@ -46,7 +45,7 @@ class UserService
             })
             ->addColumn('action', function ($user) {
                 $btn = '<button data-toggle="modal" data-id="' .
-                    $user->id . '" data-url="' . route('admin.user.update', $user) . '" 
+                    $user->id . '" data-url="' . route('admin.user.update', $user) . '"
                                 data-send="' . route('admin.user.edit', $user) . '"
                                 data-original-title="edit" class="me-3 edit btn btn-warning btn-sm
                                 editUser"><i class="fa-solid fa-pen-to-square"></i></button>';
@@ -54,7 +53,7 @@ class UserService
                     $user->events_count == 0 &&
                     $user->certifications_count == 0 &&
                     $user->publishings_count == 0 &&
-                    $user->user_surveys_count == 0 && 
+                    $user->user_surveys_count == 0 &&
                     $user->id != Auth::user()->id
                 ) {
                     $btn .= '<a href="javascript:void(0)" data-id="' .
@@ -111,7 +110,7 @@ class UserService
         throw new Exception(config('parameters.exception_message'));
     }
 
-    public function update (Request $request, User $user, $storage) 
+    public function update (Request $request, User $user, $storage)
     {
         $data = normalizeInputStatus($request->all());
 
@@ -120,7 +119,7 @@ class UserService
         $data['active'] = $user->id == Auth::user()->id ? 'S' : $data['active'];
 
         if ($user->update($data)) {
-            
+
             $user->miningUnits()->sync($request['id_mining_units']);
 
             return $this->updateUserAvatar($request, $user, $storage);
@@ -222,14 +221,14 @@ class UserService
         $file_type = 'imagenes';
         $category = 'firmas';
         $belongsTo = 'firmas';
-        
-        if (app(FileService::class)->storeSignature($user, 
-                                                    $imgBase64, 
-                                                    $file_type, 
-                                                    $category, 
+
+        if (app(FileService::class)->storeSignature($user,
+                                                    $imgBase64,
+                                                    $file_type,
+                                                    $category,
                                                     $belongsTo,
                                                     $storage,
-                                                    null)) 
+                                                    null))
         {
             return true;
         }

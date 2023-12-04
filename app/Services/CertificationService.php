@@ -67,14 +67,14 @@ class CertificationService
                                         showCertification-btn"><i class="fa-solid fa-eye"></i></button>';
 
                 $btn .= '<button data-toggle="modal" data-id="' .
-                    $certification->id . '" data-url="' . route('admin.events.certifications.update', $certification) . '" 
+                    $certification->id . '" data-url="' . route('admin.events.certifications.update', $certification) . '"
                         data-send="' . route('admin.events.certifications.edit', $certification) . '"
                         data-original-title="edit" class="edit btn btn-warning btn-sm
                         editCertification-btn"><i class="fa-solid fa-pen-to-square"></i></button>';
 
                 if ($certification->evaluations_count > 0) {
                     $btn .= '<button data-toggle="modal" title="reiniciar" data-id="' .
-                        $certification->id . '" data-url="' . route('admin.events.certifications.reset', $certification) . '" 
+                        $certification->id . '" data-url="' . route('admin.events.certifications.reset', $certification) . '"
                         data-original-title="edit" class="reset ms-3 btn btn-primary btn-sm
                         resetCertification-btn"><i class="fa-solid fa-rotate-right"></i></button>';
                 }
@@ -331,7 +331,7 @@ class CertificationService
         $allCertifications = DataTables::of($query)
             ->addColumn('user.miningUnits', function ($certification) {
                 $list = '<ul>';
-                
+
                 foreach ($certification->user->miningUnits as $miningUnit) {
                     $list .= '<li>'. $miningUnit->description .'</li>';
                 }
@@ -344,7 +344,7 @@ class CertificationService
         return $allCertifications;
     }
 
-    
+
 
 
     // ----------------- CERTIFICATION MODULE ------------------------
@@ -406,7 +406,7 @@ class CertificationService
             })
             ->addColumn('exam', function ($certification) {
                 $exam_icon = '<a href="' . route('admin.pdf.certification.exam', $certification) . '" target="_BLANK">
-                                    <img src="' . asset('assets/common/img/exam-icon.svg') . '" 
+                                    <img src="' . asset('assets/common/img/exam-icon.svg') . '"
                                     alt="examen-' . $certification->id . '"
                                     style="width:30px;">
                                 </a>';
@@ -427,11 +427,11 @@ class CertificationService
                             $certification_icon = '<a href="' . route('pdf.export.ext_certification', $certification) . '" target="_BLANK">';
                         } else if (Str::is('*WEBINAR*', strtoupper($type->name))) {
                             $certification_icon = '<a href="' . route('pdf.export.web_certification', $certification) . '" target="_BLANK">';
-                        } 
+                        }
                     }
 
                     $certification_icon .= '<img src="' . asset('assets/common/img/certification-icon.svg') . '"
-                                                alt="certificado-' . $certification->id . '" 
+                                                alt="certificado-' . $certification->id . '"
                                                 style="width:30px;">
                                           </a>';
                 } else {
@@ -445,9 +445,9 @@ class CertificationService
                 $type = $certification->event->exam->course->type;
 
                 $btn = '-';
-             
-                if ($certification->its_approved && 
-                    $type && 
+
+                if ($certification->its_approved &&
+                    $type &&
                     Str::is('*INDUCCI*', strtoupper($type->name)) &&
                     $certification->company->active == 'S'
                     ) {
@@ -456,7 +456,7 @@ class CertificationService
                                 <a class="btn btn-primary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
                                     Ver documentos
                                 </a>
-                            
+
                                 <div class="dropdown-menu">';
 
                     if ($certification->miningUnits->isNotEmpty()) {
@@ -467,7 +467,7 @@ class CertificationService
 
                             if (in_array($sufix, ['A', 'P', 'S', 'C'])) {
 
-                                $btn .= '<a class="dropdown-item white-space-normal d-flex align-items-center" 
+                                $btn .= '<a class="dropdown-item white-space-normal d-flex align-items-center"
                                         href="'. route('admin.pdf.certification.anexo', [$certification, $miningUnit]) .'" target="_BLANK">
                                             <i class="fa-solid fa-file-lines me-3"></i>
                                             <span>

@@ -80,6 +80,7 @@ $(function () {
                 }
             },
             submitHandler: function (form, event) {
+
                 event.preventDefault()
                 var form = $(form)
                 var loadSpinner = form.find('.loadSpinner')
@@ -172,6 +173,7 @@ $(function () {
         // ----------- DESTROY FILE ---------------
 
         $('html').on('click', '.deleteFile', function () {
+
             var url = $(this).data('url')
 
             SwalDelete.fire().then(function (e) {
@@ -207,9 +209,6 @@ $(function () {
                 return false;
             });
         })
-
     }
-
-
 
 })

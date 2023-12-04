@@ -143,35 +143,50 @@ class SpecCourseService
     {
         $user = Auth::user();
 
+        $query = SpecCourse::with([
+                                'events' => fn ($q) => $q->with([
+                                    'user:id,name,paternal',
+                                ])
+                                    ->select('events.id', 'events.course_module_id', 'events.user_id')
+                                    ->where('events.active', 'S')
+                                    ->whereHas('courseModule', function ($q2) {
+                                        $q2->where('active', 'S');
+                                    }),
+                                'file' => fn ($q) => $q->where('file_type', 'imagenes'),
+                            ])
+                            ->where('active', 'S')
+                            ->withMax('events', 'date');
+
         if ($user->role == 'instructor') {
 
-            $specCourses = SpecCourse::whereHas('events', function ($q) use ($user) {
-                $q->where('user_id', $user->id)
-                    ->where('events.active', 'S');
-            })
-                ->with([
-                    'events' => fn ($q) => $q->with([
-                        'user:id,name,paternal',
-                    ])
-                        ->select('events.id', 'events.course_module_id', 'events.user_id')
-                        ->where('events.active', 'S')
-                        ->whereHas('courseModule', function ($q2) {
-                            $q2->where('active', 'S');
-                        }),
-                    'file' => fn ($q) => $q->where('file_type', 'imagenes'),
-                ])
+            $query = $query->whereHas('events', function ($q) use ($user) {
+                    $q->where('events.user_id', $user->id);
+                })
                 ->withCount(['specCourseCertifications as participants_count' => function ($q) use ($user) {
                     $q->select(DB::raw('count(distinct(certifications.user_id))'))
                         ->where('events.user_id', $user->id)
                         ->where('events.active', 'S');
-                }])
-                ->where('active', 'S')
-                ->withMax('events', 'date')
-                ->get()
-                ->sortByDesc('events_max_date');
+                }]);
 
         } elseif ($user->role == 'participants') {
+
+            $specCourses = $query->whereHas('specCourseCertifications', function ($q) use ($user) {
+                                $q->where('certifications.user_id', $user->id);
+                            })
+                            ->withCount(['specCourseCertifications as participants_count' => function ($q) use ($user) {
+                                $q->select(DB::raw('count(distinct(certifications.user_id))'))
+                                    ->where('events.active', 'S');
+                            }]);
+                            // ->withCount([
+                            //     'modules as total_modules_count',
+                            //     'modules as completed_modules_count' => function ($q2) use ($user) {
+                            //         $q2->
+                            //     }
+                            // ]);
         }
+
+        $specCourses = $query->get()
+                            ->sortByDesc('events_max_date');
 
         return $specCourses ?? collect();
     }

@@ -9,10 +9,10 @@
             <div class="total-width-container">
                 <h4>
                     <a href="{{route('aula.course.index')}}">
-                        <i class="fa-solid fa-circle-chevron-left"></i> Cursos
+                        <i class="fa-solid fa-circle-chevron-left"></i> Cursos de especialización
                     </a>
-                    <span> / {{$course->description}} </span> /
-                    <a href="{{route('aula.course.show', $course)}}">
+                    <span> /  {{$specCourse->title}} </span> /
+                    <a href="{{ route('aula.specCourses.show', $specCourse) }}">
                         MENÚ
                     </a> /
                     EVALUACIONES
@@ -21,11 +21,25 @@
         </div>
     </div>
 
-    <div class="mt-5 card-body body-global-container card z-index-2 principal-container">
+    <div class="mt-3 card-body body-global-container card z-index-2 principal-container">
+
+        <div class="index-module-title mb-3">
+            Módulos:
+        </div>
+
+        @foreach ($modules as $module)
+        @php
+            $module_model = $module->first()->event->courseModule;
+        @endphp
+
+        <div class="module-title mb-4">
+            {{ $module_model->title }}
+        </div>
 
         <div class="courses-cards-container">
 
-            @foreach($certifications as $certification)
+
+            @foreach($module as $certification)
 
             @php
 
@@ -37,6 +51,7 @@
                                 $certification->status == 'pending' &&
                                 $certification->assist_user == 'S' &&
                                 Auth::user()->signature == 'S';
+
             @endphp
 
             <div class="card evaluation-card">
@@ -96,7 +111,7 @@
 
                             <button type="button" class="btn variable-info btn-evaluation-start" data-toggle="modal"
                                 data-target="#instructions-modal" data-send='{{route('aula.course.ajax.certification', $certification)}}'
-                                data-url="{{route('aula.course.quiz.start', $certification)}}">
+                                data-url="{{route('aula.specCourses.evaluations.quiz.start', $certification)}}">
                                 Iniciar &nbsp;
                                 <i class="fa-solid fa-chevron-right"></i>
                             </button>
@@ -128,6 +143,13 @@
                         </div>
                         @endif
 
+                        @elseif($event->date != getCurrentDate())
+
+                        <div class="variable-info" style="background-color: rgba(189, 20, 20, 0.486)">
+                            Fuera de Fecha &nbsp;
+                            <i class="fa-solid fa-calendar-xmark"></i>
+                        </div>
+
                         @elseif($certification->assist_user == 'N')
 
                         <div class="variable-info" style="background-color: rgba(189, 20, 20, 0.486)">
@@ -142,13 +164,6 @@
                             <i class="fa-solid fa-signature"></i>
                         </div>
 
-                        @else
-
-                        <div class="variable-info" style="background-color: rgba(189, 20, 20, 0.486)">
-                            Fuera de Fecha &nbsp;
-                            <i class="fa-solid fa-calendar-xmark"></i>
-                        </div>
-
                         @endif
 
                     </div>
@@ -156,9 +171,14 @@
                 </div>
             </div>
 
+
             @endforeach
 
         </div>
+
+        @endforeach
+
+
 
     </div>
 

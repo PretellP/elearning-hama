@@ -1,7 +1,6 @@
-<form class="steps" method="POST" action="{{route('aula.course.quiz.update', [$certification, $exam, ($num_question+1), $key+1, $evaluation->id])}}" id="quizStep">
+<form class="steps" method="POST" action="{{ $routeUpdate }}" id="quizStep">
 
     @method('PATCH')
-
     @csrf
 
     <fieldset>
@@ -18,18 +17,18 @@
         </div>
 
         <div class="box-quiz-head">
-            <h2 class="fs-title"> {{$question->statement}}  </h2> 
+            <h2 class="fs-title"> {{$question->statement}}  </h2>
 
             <input type="hidden" name="question" value="{{$question->id}}">
         </div>
-        
+
         <div class="box-quiz-body">
 
             <div class="btn-prev">
                 @if (($num_question+1) != '1')
-                    <a href="{{route('aula.course.quiz.show', [$certification, ($num_question)])}}">
+                    <a href="{{ $route }}">
                             <i class="fa-solid fa-angles-left"></i>
-                    </a>  
+                    </a>
                 @endif
             </div>
 
@@ -43,7 +42,7 @@
                             @if($evaluation->selected_alternatives == $alternative->id)
                                 checked
                             @endif>
-                
+
                     <label class="text-center" for="{{$alternative->id}}">
                         {{$alternative->description}}
                     </label>
@@ -53,7 +52,7 @@
                 @endforeach
 
             </div>
-            
+
             <div class="btn-save">
                 @if (($num_question + 1) != count($evaluations))
                     <button type="submit" name="next" class="next action-button button-submit" value="Guardar">
@@ -66,7 +65,7 @@
                     </button>
                 @endif
             </div>
-        
+
         </div>
 
     </fieldset>

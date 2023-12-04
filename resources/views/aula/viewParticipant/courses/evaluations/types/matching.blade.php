@@ -1,13 +1,12 @@
-<form id="matchingQuiz" class="steps" method="POST" action="{{route('aula.course.quiz.update', [$certification, $exam, ($num_question+1), $key+1, $evaluation->id])}}">
+<form id="matchingQuiz" class="steps" method="POST" action="{{ $routeUpdate }}">
 
     @method('PATCH')
-
     @csrf
 
     <fieldset>
 
         <div class="info-question">
-            <h2 class="fs-title"> {{$question->statement}}  </h2> 
+            <h2 class="fs-title"> {{ $question->statement }}  </h2>
         </div>
 
         <div class="alert-container">
@@ -33,7 +32,7 @@
                             $only_selected = array_map( function ($v) {
                                 return explode(':', $v)[1];
                             }, $selected_options_array);
-                        }   
+                        }
 
                     @endphp
 
@@ -43,18 +42,18 @@
                             $alternative = $alternatives->where('id', $alt_id)->first();
                             $image_url = verifyFile($alternative->file);
                         @endphp
-    
+
                         <div class="drag {{ $image_url == null ? 'without_image' : '' }}@if(in_array($alt_id, $only_selected)) dragged dropped @endif" id='{{$alt_id}}'>
                             <img src="{{ $image_url }}" alt="">
                             <span>
                                 {{$alternative->description}}
                             </span>
                         </div>
-    
+
                     @endforeach
-    
+
                 </section>
-    
+
                 <section id="droppable-section">
 
                     @foreach($options_ids as $option_id)
@@ -69,51 +68,49 @@
                             {
                                 $trigger_selected = true;
                                 break;
-                            } 
+                            }
                         }
                         if($trigger_selected){
                             $alternative = $alternatives->where('id', $opt_and_alt_array[1])->first();
                         }
-                    
+
                     @endphp
 
                     <div class="droppable-option">
                         <div class="drop @if($trigger_selected) dropped @endif" draggable="false" id="option-{{$option_id}}">
                             <img draggable="false" src="" alt="">
                             <span></span>
-                            <input type="hidden" class="droppable_input" required name="option-{{$option_id}}" 
+                            <input type="hidden" class="droppable_input" required name="option-{{$option_id}}"
                             value="@if($trigger_selected){{$opt_and_alt_array[1]}}@endif">
                             @if($trigger_selected)
                             <div class="drag drag-drop" id="{{ $opt_and_alt_array[1] }}" style="top: 0px; left: 0px; position:relative;">
                                 <img src="{{ verifyFile($alternative->file) }}">
                                 <span> {{ $alternative->description }} </span>
-                            </div>  
+                            </div>
                             @endif
                         </div>
                         <span>
                             {{$droppable_option->description}}
                         </span>
-                    </div>  
-    
+                    </div>
+
                     @endforeach
-    
+
                 </section>
             </div>
-            
-        </div>
-        
-        <div class="box-quiz-body">
 
-           
+        </div>
+
+        <div class="box-quiz-body">
 
             <div class="btn-prev">
                 @if (($num_question+1) != '1')
-                    <a href="{{route('aula.course.quiz.show', [$certification, ($num_question)])}}">
-                            <i class="fa-solid fa-angles-left"></i>
-                    </a>  
+                    <a href="{{ $route }}">
+                        <i class="fa-solid fa-angles-left"></i>
+                    </a>
                 @endif
             </div>
-            
+
             <div class="btn-save">
                 @if (($num_question + 1) != count($evaluations))
                     <button type="submit" name="next" class="next action-button save-matching" value="Guardar">
@@ -126,7 +123,7 @@
                     </button>
                 @endif
             </div>
-        
+
         </div>
 
     </fieldset>

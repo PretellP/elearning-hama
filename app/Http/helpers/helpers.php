@@ -114,42 +114,46 @@ function getItsTimeOut($diff_time)
     return $diff_time + 1 < 0 ? true : false;
 }
 
-function getCertificationsFromCourse(Course $course)
-{
-    $user = Auth::user();
+// function getCertificationsFromCourse(Course $course)
+// {
+//     $user = Auth::user();
 
-    $certifications = $user->certifications()
-        ->select(
-            'id',
-            'user_id',
-            'event_id',
-            'evaluation_type',
-            'status',
-            'score',
-            'assist_user',
-            'evaluation_time'
-        )
-        ->with('evaluations:id,certification_id,points')
-        ->with([
-            'event' => fn ($query) => $query
-                ->select('id', 'exam_id', 'type', 'date', 'description', 'user_id', 'min_score', 'questions_qty')
-                ->with('user:id,name,paternal,maternal')
-                ->with([
-                    'exam' => fn ($query2) => $query2
-                        ->select('id', 'course_id', 'owner_company_id', 'exam_time')
-                        ->with('ownerCompany:id,name')
-                        ->withCount('questions')
-                        ->withAvg('questions', 'points')
-                ])
-        ])
-        ->get()
-        ->filter(function ($certification) use ($course) {
-            if ($certification->event->exam->course_id == $course->id && $certification->evaluation_type == 'certification')
-                return $certification;
-        })->sortByDesc('id');
+//     $certifications = $user->certifications()
+//         ->select(
+//             'id',
+//             'user_id',
+//             'event_id',
+//             'evaluation_type',
+//             'status',
+//             'score',
+//             'assist_user',
+//             'evaluation_time'
+//         )
+//         ->with('evaluations:id,certification_id,points')
+//         ->whereHas('event', function ($q) {
+//             $q->doesntHave('courseModule');
+//         })
+//         ->with([
+//             'event' => fn ($query) => $query
+//                 ->select('id', 'exam_id', 'type', 'date', 'description', 'user_id', 'min_score', 'questions_qty')
+//                 ->with('user:id,name,paternal,maternal')
+//                 ->with([
+//                     'exam' => fn ($query2) => $query2
+//                         ->select('id', 'course_id', 'owner_company_id', 'exam_time')
+//                         ->with('ownerCompany:id,name')
+//                         ->withCount('questions')
+//                         ->withAvg('questions', 'points')
+//                 ])
+//                 ->doesntHave('courseModule')
+//         ])
+//         ->get()
+//         ->filter(function ($certification) use ($course) {
+//             if ($certification->event->exam->course_id == $course->id && $certification->evaluation_type == 'certification')
+//                 return $certification;
+//         })->sortByDesc('id');
 
-    return $certifications;
-}
+//     return $certifications;
+// }
 
 function getDroppableOptionsFromQuestion($question)
 {
@@ -286,17 +290,9 @@ function getOwnerCompanyFromCertification(Certification $certification)
 
 function getSpecCourseInstructors($specCourse)
 {
-    $user = Auth::user();
-
-    if ($user->role == 'instructor') {
-
-        $instructors = $specCourse->events->map(function ($event) {
-            return $event->user;
-        })->unique();
-    }
-    else if ($user->role == 'participants') {
-
-    }
+    $instructors = $specCourse->events->map(function ($event) {
+        return $event->user;
+    })->unique();
 
     return $instructors ?? collect();
 }

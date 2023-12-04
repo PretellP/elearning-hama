@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\{Exam, Certification, User, Room};
 use Carbon\Carbon;
 
-class Event extends Model
+  class Event extends Model
 {
     use \Znck\Eloquent\Traits\BelongsToThrough;
 
@@ -112,7 +112,7 @@ class Event extends Model
 
     public function courseModule()
     {
-        return $this->belongsTo(CourseModule::class, 'course_module_id');
+        return $this->belongsTo(CourseModule::class, 'course_module_id', 'id');
     }
 
     public function specCourse()
