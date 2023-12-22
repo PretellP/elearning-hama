@@ -46,7 +46,7 @@
                 </ul>
             </li>
 
-            @can('denySecurity')
+            @can(['denySecurity','denyCompany'])
 
             <li class="{{setActive('aula.signatures.*')}}">
                 <a href="{{ route('aula.signatures.index') }}" class="nav-link">
@@ -57,14 +57,17 @@
 
             @endcan
 
+            @can('denyCompany')
+
             <li class="{{setActive('aula.course.*')}}">
                 <a href="{{route('aula.course.index')}}" class="nav-link">
                     <i class="fa-solid fa-book"></i>
                     <span>E-Learning</span>
                 </a>
             </li>
+            @endcan
 
-            @can('denySecurity')
+            @can(['denySecurity','denyCompany'])
 
             <li class="{{ setActive('aula.specCourses.*') }}">
                 <a href="{{ route('aula.specCourses.index') }}" class="nav-link">
@@ -75,7 +78,7 @@
 
             @endcan
 
-            @can(['denyInstructor', 'denySecurity'])
+            @can(['denyInstructor', 'denySecurity','denyCompany'])
 
             <li class="{{setActive('aula.freecourse.*')}}">
                 <a href="{{route('aula.freecourse.index')}}" class="nav-link">
@@ -100,6 +103,35 @@
                     @endif
                 </a>
             </li>
+
+            @endcan
+
+            @can('allCompany')
+                <li class="{{setActive('aula.company.kpisCompany.*')}}">
+                    <a href="{{ route('aula.kpisCompany.index') }}" class="nav-link">
+                        <i class="fa-solid fa-chart-simple"></i>
+                        <span>KPIs de la empresa</span>
+                    </a>
+                </li>
+                <li class="{{setActive('aula.company.docCompany.*')}}">
+                    <a href="{{ route('aula.docCompany.index') }}" class="nav-link">
+                        <i class="fa-regular fa-folder-open"></i>
+                        <span>Documentos de la empresa</span>
+                    </a>
+                </li>
+                <li class="{{setActive('aula.company.userCompany.*')}}">
+                    <a href="{{ route('aula.userCompany.index') }}" class="nav-link">
+                        <i class="fa-solid fa-users"></i>
+                        <span>Usuarios de la empresa</span>
+                    </a>
+                </li>
+               
+                <li class="{{setActive('aula.company.upFilesCompany.*')}}">
+                    <a href="{{ route('aula.upFilesCompany.index') }}" class="nav-link">
+                        <i class="fa-solid fa-upload"></i>
+                        <span>Archivos Subidos</span>
+                    </a>
+                </li>
 
             @endcan
 

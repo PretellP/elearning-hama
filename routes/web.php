@@ -54,6 +54,16 @@ use App\Http\Controllers\Aula\Instructor\{
     AulaSpecModuleController,
 };
 
+use App\Http\Controllers\Aula\Company\{
+AulaUserCompanyController,
+AulaDocCompanyController,
+AulaKpisCompanyController,
+AulaUploadFilesCompanyController
+};
+
+
+
+
 // use App\Http\Controllers\Home\{HomeAboutController, HomeController, HomeCourseController, HomeCertificationController, HomeFreeCourseController};
 
 use App\Http\Controllers\Auth\{LoginController};
@@ -597,7 +607,7 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
         });
 
         Route::group([
-            'middleware' => 'check.role:participants,instructor,security_manager,security_manager_admin',
+            'middleware' => 'check.role:participants,instructor,security_manager,security_manager_admin,companies',
         ], function () {
 
             // ---------------  E LEARNING -------------------
@@ -823,6 +833,35 @@ Route::group(['middleware' => ['auth', 'check.valid.user']], function () {
                         Route::get('/{event}/{miningUnit}', 'indexSecurity')->name('index');
                         Route::get('/{event}/{miningUnit}/crear-firma', 'createSecurity')->name('create');
                         Route::post('/{event}/{miningUnit}/registrar-firma', 'storeSecurity')->name('store');
+                    });
+                });
+
+            });
+
+
+            // --------------- EMPRESAS --------------------
+
+
+            Route::group(['middleware'=>'check.role:companies'], function(){
+                Route::group(['prefix'=> 'user-company', 'as' =>'userCompany.'], function () {
+                    Route::controller(AulaUserCompanyController::class)->group(function () {
+                        Route::get('/','index')->name('index');
+                     });
+                });
+                Route::group(['prefix'=> 'doc-company', 'as' =>'docCompany.'], function () {
+                    Route::controller(AulaDocCompanyController::class)->group(function () {
+                        Route::get('/','index')->name('index');
+                    });
+                });
+                Route::group(['prefix'=> 'KPIs-company', 'as' =>'kpisCompany.'], function () {
+                    Route::controller(AulaKpisCompanyController::class)->group(function () {
+                        Route::get('/','index')->name('index');
+                    });
+                });
+                Route::group(['prefix'=> 'archivo-update-company', 'as' =>'upFilesCompany.'], function () {
+                    Route::controller(AulaUploadFilesCompanyController::class)->group(function () {
+                        Route::get('/','index')->name('index');
+
                     });
                 });
             });

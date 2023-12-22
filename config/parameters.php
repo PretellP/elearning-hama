@@ -17,6 +17,7 @@ return [
         'security_manager' => 'Ingeniero de Seguridad Nexa',
         'security_manager_admin' => 'Gerente de Seguridad Nexa',
         'technical_support' => 'Soporte Tecnico',
+        'companies' => 'Empresas',
     ],
 
     'survey_destined_to' => [

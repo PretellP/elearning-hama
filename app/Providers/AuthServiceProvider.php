@@ -49,5 +49,12 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('denySecurity', function ($user) {
             return !in_array($user->role, ['security_manager', 'security_manager_admin']);
         });
+
+        Gate::define('allCompany', function ($user) {
+            return in_array($user->role, ['companies']);
+        });
+        Gate::define('denyCompany', function ($user) {
+            return !in_array($user->role, ['companies']);
+        });
     }
 }

@@ -25,6 +25,7 @@ class Aula
 
         if(in_array($role, [
                             'instructor', 
+                            'companies',
                             'participants',
                             'security_manager',
                             'security_manager_admin',
@@ -35,4 +36,7 @@ class Aula
 
         abort(403, 'Acceso denegado');
     }
+
+
+
 }

@@ -65,5 +65,7 @@
 
 <script src="{{asset('assets/common/js/scripts.js')}}"></script>
 <script type="module" src="{{asset('assets/aula/js/custom.js')}}"></script>
+<script type="module" src="{{asset('assets/aula/js/company.js')}}"></script>
+
 
 @yield('extra-script')

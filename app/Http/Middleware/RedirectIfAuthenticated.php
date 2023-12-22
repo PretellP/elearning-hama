@@ -27,6 +27,7 @@ class RedirectIfAuthenticated
                 {
                     case 'participants':
                     case 'instructor':
+                    case 'companies':
                         $verifiedRoute = route('aula.index');
                         break;
                     default:

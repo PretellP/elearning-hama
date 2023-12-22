@@ -69,7 +69,7 @@
 							</div>
 	
 							<div class="text-center btn-login-submit">
-								<button type="submit" class="btn w-100 my-4 mb-2">{{_('INGRESAR')}}</button>
+								<button type="submit" class="btn w-100 my-4 mb-2">{{('INGRESAR')}}</button>
 							</div>
 	
 				
