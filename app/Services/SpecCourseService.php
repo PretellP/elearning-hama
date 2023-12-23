@@ -176,13 +176,17 @@ class SpecCourseService
                             ->withCount(['specCourseCertifications as participants_count' => function ($q) use ($user) {
                                 $q->select(DB::raw('count(distinct(certifications.user_id))'))
                                     ->where('events.active', 'S');
-                            }]);
-                            // ->withCount([
-                            //     'modules as total_modules_count',
-                            //     'modules as completed_modules_count' => function ($q2) use ($user) {
-                            //         $q2->
-                            //     }
-                            // ]);
+                            }])
+                            ->withCount([
+                                'modules as total_modules_count',
+                                'modules as completed_modules_count' => function ($q2) use ($user) {
+                                    $q2->whereHas('events.certifications', function ($q3) use ($user) {
+                                        $q3->where('certifications.user_id', $user->id)
+                                            ->where('certifications.status', 'finished');
+                                            // ->whereRaw('module_events_count ');
+                                    });
+                                }
+                            ]);
         }
 
         $specCourses = $query->get()
